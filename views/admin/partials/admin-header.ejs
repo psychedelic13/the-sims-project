@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title><%= title %></title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="/star-admin-template/vendors/iconfonts/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/star-admin-template/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="/star-admin-template/vendors/css/vendor.bundle.addons.css">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="/star-admin-template/stylesheets/css/style.css">
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <link rel="stylesheet" href="/star-admin-template/stylesheets/css/customstyle.css">
+    <!-- End plugin css for this page -->
+    <link rel="shortcut icon" href="/star-admin-template/images/favicon.png" />
+</head>
+
+<body>
+    <div class="container-scroller">
+        <!-- partial:partials/_navbar.html -->
+        <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+
+            <!-- LOGO CONTAINER -->
+            <div class="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center">
+                <a class="navbar-brand brand-logo" href="index.html">
+                    <img src="/star-admin-template/images/logo.svg" alt="logo" />
+                </a>
+                <a class="navbar-brand brand-logo-mini" href="index.html">
+                    <img src="/star-admin-template/images/logo-mini.svg" alt="logo" />
+                </a>
+            </div>
+
+            <!-- TOP NAVIGATION -->
+            <div class="navbar-menu-wrapper d-flex align-items-center">
+
+                <!-- NOTIFICATIONS AND PROFILE SETTINGS -->
+                <ul class="navbar-nav navbar-nav-right">
+
+                    <!-- PROFILE BUTTON -->
+                    <li class="nav-item dropdown d-none d-xl-inline-block">
+                        <a class="nav-link dropdown-toggle" id="UserDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
+                            <span class="profile-text">Hello, Administrator !</span>
+                            <img class="img-xs rounded-circle" src="/star-admin-template/images/faces/face1.jpg" alt="Profile image">
+                        </a>
+
+                        <!-- PROFILE CONTENTS DROPDOWN -->
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
+                            <a class="dropdown-item p-0">
+                                <div class="d-flex border-bottom">
+                                    <div class="py-3 px-4 d-flex align-items-center justify-content-center">
+                                        <i class="mdi mdi-bookmark-plus-outline mr-0 text-gray"></i>
+                                    </div>
+                                    <div class="py-3 px-4 d-flex align-items-center justify-content-center border-left border-right">
+                                        <i class="mdi mdi-account-outline mr-0 text-gray"></i>
+                                    </div>
+                                    <div class="py-3 px-4 d-flex align-items-center justify-content-center">
+                                        <i class="mdi mdi-alarm-check mr-0 text-gray"></i>
+                                    </div>
+                                </div>
+                            </a>
+                            <a class="dropdown-item">Change Password</a>
+                            <a class="dropdown-item">Check Inbox</a>
+                            <a class="dropdown-item">Sign Out</a>
+                        </div>
+                    </li>
+                </ul>
+                <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+                    <span class="icon-menu"></span>
+                </button>
+            </div>
+        </nav>
+        <!-- END OF TOP NAVIGATION -->
+
+
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper">
+            <!-- partial:partials/_sidebar.html -->
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+                <ul class="nav">
+
+                    <!-- PROFILE SIDEBAR -->
+                    <li class="nav-item nav-profile">
+                        <div class="nav-link">
+                            <div class="user-wrapper">
+                                <div class="profile-image">
+                                    <img src="/star-admin-template/images/faces/face1.jpg" alt="profile image">
+                                </div>
+                                <div class="text-wrapper">
+                                    <p class="profile-name">Serena van der Woodsen</p>
+                                    <div>
+                                        <small class="designation text-muted">Superuser</small>
+                                        <span class="status-indicator online"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <!-- TAB BUTTONS -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard">
+                            <i class="menu-icon mdi mdi-chart-line-variant"></i>
+                            <span class="menu-title">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/inventory">
+                            <i class="menu-icon mdi mdi-cube"></i>
+                            <span class="menu-title">Inventory</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/customers">
+                            <i class="menu-icon mdi mdi-face"></i>
+                            <span class="menu-title">Customer Profiles</span>
+                        </a>
+                    </li>
+
+                    <!-- COLLAPSE TAB -->
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#transaction" aria-expanded="false" aria-controls="transaction">
+                            <i class="menu-icon mdi mdi-tag"></i>
+                            <span class="menu-title">Online Transactions</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="transaction">
+                            <!-- COLLAPSE CONTENT -->
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/onlinetransactions/ongoing">Ongoing Transactions</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/onlinetransactions/all">Transaction Records</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/onlinetransactions/payments">Payment Records</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/onlinetransactions/shippings">Shipping Records</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/stalltransactions">
+                            <i class="menu-icon mdi mdi-credit-card"></i>
+                            <span class="menu-title">Stall Transactions</span>
+                        </a>
+                    </li>
+
+                    <!-- REPORTS COLLAPSE -->
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#reports" aria-expanded="false" aria-controls="reports">
+                            <i class="menu-icon mdi mdi-file-chart"></i>
+                            <span class="menu-title">Tools</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <!-- REPORTS COLLAPSE CONTENTS -->
+                        <div class="collapse" id="reports">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/sales"> Sales </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/expenses"> Expenses </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/report"> Printable Reports </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/query"> Queries </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <!-- END OF TAB BUTTONS -->
+                </ul>
+            </nav>
+            <!-- END OF SIDEBAR -->
