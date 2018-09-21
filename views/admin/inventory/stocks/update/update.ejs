@@ -1,0 +1,108 @@
+<% include ../../partials/admin-header.ejs %>
+    <!-- MAIN CONTENTS -->
+    <!-- partial -->
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <% if (messages.error) { %>
+                <div class="row purchace-popup">
+                    <div class="col-12">
+                        <span class="d-flex alifn-items-center">
+                            <p class="text-danger"><% messages.error %></p>
+                            <i class="mdi mdi-close popup-dismiss"></i>
+                        </span>
+                    </div>
+                </div>
+            <% } %>
+
+            <% if (messages.success) { %>
+                <div class="row purchace-popup">
+                    <div class="col-12">
+                        <span class="d-flex alifn-items-center">
+                            <p class="text-success"><% messages.success %></p>
+                            <i class="mdi mdi-close popup-dismiss"></i>
+                        </span>
+                    </div>
+                </div>
+            <% } %>
+
+            <div class="row">
+                <div id="main" class="col-lg-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <a href="/inventory/stocks/display/<%= productno %>"><button type="button" class="btn btn-outline-success title-btn">&lt;</button></a>
+                            <a href="/admin/inventory/stocks/add/<%= productno %>"><button type="button" class="btn btn-outline-success title-btn">Add Size</button></a>
+                            <i class="menu-icon mdi mdi-cube text-info icon-md table-icon"></i>
+                            <h4 class="card-title table-name">Update Stocks</h4>
+                            <form action="/admin/inventory/stocks/update/<%= productno %>" method="post" name="addsize">
+                                <div class="form-group">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product SKU</th>
+                                                    <th>Total Stock</th>
+                                                    <th>Available Stock</th>
+                                                    <th>Reserved Stock</th>
+                                                    <th>Add</th>
+                                                    <th>Remove</th>
+                                                </tr>
+                                            </thead>
+                                            <!--
+                                            Using forEach loop for the products array
+
+                                            myArray.forEach(function(el, index) {
+                                            // el - current element, i - index
+                                        });
+                                    -->
+                                    <tbody>
+                                        <% if(data) { %>
+                                            <% data.forEach(function(product) { %>
+                                                <tr>
+                                                    <input type="hidden" name="productsku[]" value="<%= product.product_sku %>">
+                                                    <td><%= product.product_sku %></td>
+                                                    <td><%= product.total_stock %></td>
+                                                    <td><%= product.available_stock %></td>
+                                                    <td><%= product.reserved_stock %></td>
+                                                    <td>
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" name="addstock[]" value="<%= addstock %>">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" name="removestock[]" value="<%= removestock %>">
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <% }) %>
+                                                <% } %>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-success btn-submit" type="submit" name="updatestock" value="OKKUUUURRRTT">Update Product Stock</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <!-- END BLOCK QUOTE -->
+            </div>
+
+        <!-- content-wrapper ends -->
+        </div>
+        <!-- partial:partials/_footer.html -->
+        <footer class="footer">
+            <div class="container-fluid clearfix">
+                <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018
+                    <a href="http://www.bootstrapdash.com/" target="_blank">Bootstrapdash</a>. All rights reserved.</span>
+                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with
+                    <i class="mdi mdi-heart text-danger"></i>
+                </span>
+            </div>
+        </footer>
+    <!-- partial -->
+    </div>
+    <!-- main-panel ends -->
+<% include ../../partials/admin-footer.ejs %>

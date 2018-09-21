@@ -1,62 +1,61 @@
 /* CUSTOM STYLESHEET */
 * {
-  text-decoration: none;
+    text-decoration: none;
 }
 
-
 .title-btn {
-  float: right;
-  font-size: 12px;
-  padding: 12px 24px;
+    float: right;
+    font-size: 12px;
+    padding: 12px 24px;
 }
 
 .title {
-  padding: 8px;
-  font-size: 24px;
-  font-weight: 100;
-  text-transform: uppercase;
+    padding: 8px;
+    font-size: 24px;
+    font-weight: 100;
+    text-transform: uppercase;
 }
 
 .table-icon {
-  float: left;
-  padding-right: 8px;
+    float: left;
+    padding-right: 8px;
 }
 
 .table-name {
-  padding: 8px;
-  float: left;
-  font-size: 24px;
-  font-weight: lighter;
-  text-transform: uppercase;
+    padding: 8px;
+    float: left;
+    font-size: 24px;
+    font-weight: lighter;
+    text-transform: uppercase;
 }
 
 .index-link {
-  color: #555555;
+    color: #555555;
 }
 
 .index-links {
-  float: right;
+    float: right;
 }
 
 .form-control {
-  border-color: #C7EDE8;
+    border-color: #C7EDE8;
 }
 
 .btn-icons {
-  padding: 3px !important;
-  width: 24px !important;
-  height: 24px !important;
+    padding: 3px !important;
+    width: 24px !important;
+    height: 24px !important;
 }
 
 .btn-submit {
-  float: right;
+    float: right;
 }
 
 .popup-dismiss {
     margin-left: auto !important;
 }
 
-.purchace-popup > div > span {
+.purchace-popup>div>span {
     background-color: #ffffff;
     border-color: #555555;
     border-radius: 3px;
@@ -66,4 +65,8 @@
     display: inline-block;
     margin: 0;
     padding: 0;
+}
+
+.auth-bg-1 {
+    background-color: #33B5E5 !important;
 }

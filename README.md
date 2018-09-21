@@ -1,9 +1,19 @@
-the-sims-project
+# the-sims-project
 
-SIMS - Sales and Inventory Monitoring System
+`SIMS - Sales and Inventory Monitoring System`
+
+## Still on process of development.
 
 An ecommerce website that covers customer side and admin side.
 
-It produces sales projection using Triple Exponential Smoothing.
+### Modules
 
-Still on process of development.
+- Dashboard `which includes Sales Forecasting using Time Series Analysis, Triple Exponential Smoothing / Holt-Winters`
+- Inventory
+- Customer Profiles
+- Transactions
+- Stall Transactions
+- Payments
+- Shipping
+- Sales
+- Expenses

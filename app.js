@@ -5,10 +5,12 @@ var bodyParser = require('body-parser')
 var mysql = require('mysql')
 var app = express()
 
+require('dotenv').config()
+
 // Configure express to use views folder
 app.set('views', path.join(__dirname, 'views'))
 // Configure express to use public folder
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname + '/public')))
 // Set templating engine
 app.set('view engine', 'ejs')
 
@@ -51,18 +53,20 @@ var MySQLStore = require('express-mysql-session')(session)
 var bcrypt = require('bcrypt-nodejs')
 
 var options = {
-    socketPath: '/var/run/mysqld/mysqld.sock',
-    host: 'localhost',
-    user: 'root',
-    password: 'SabrieL08..',
-    database: 'sims'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    socketPath: '/var/run/mysqld/mysqld.sock'
 }
 
 var sessionStore = new MySQLStore(options)
 
 // bodyParser.urlencoded() parses the text as URL encoded data
 // (which is how browsers tend to send form data from regular forms set to POST and exposes the resulting object(containing the keys and values) on req. body.)
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({
+    extended: true
+}))
 app.use(bodyParser.json())
 app.use(cookieParser('keyboard cat'))
 app.use(session({
@@ -70,7 +74,9 @@ app.use(session({
     resave: false,
     store: sessionStore,
     saveUninitialized: true,
-    cookie: { maxAge: 60000 }
+    cookie: {
+        maxAge: 60000
+    }
 }))
 
 app.use(passport.initialize())
@@ -78,28 +84,42 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
 
-/*passport.use(new LocalStrategy(
-  function(username, password, done) {
-      console.log(username)
-      console.log(password)
-      const db = require('./db')
-
-      db.query('SELECT password FROM accounts_tbl WHERE username = ?', [username], function(err, results, fields) {
-              if (err) {done(err)};
-
-              console.log(results);
-              if (results.length === 0) {
-                  done(null, false)
-              }
-
-              return(null, 'false')
-          })
-    }
-))*/
+app.use(function(req, res, next) {
+    res.locals.isAuthenticated = req.isAuthenticated()
+    next();
+})
 
 app.use('/', index)
 app.use('/admin', admin)
 
+passport.use(new LocalStrategy(
+    function(username, password, done) {
+        const db = require('./db')
+
+        db.query('SELECT account_no, password FROM accounts_tbl WHERE username = ?', [username], function(err, results, fields) {
+            if (err) {
+                done(err)
+            };
+
+            if (results.length === 0) {
+                done(null, false)
+            } else {
+                const hash = results[0].password.toString()
+
+                bcrypt.compare(password, hash, function(err, response) {
+                    if (response === true) {
+                        return done(null, {
+                            user_id: results[0].account_no
+                        })
+                    } else {
+                        return done(null, false)
+                    }
+                })
+            }
+        })
+    }
+))
+
 app.listen(3006, function() {
-    console.log('Server running at port 3000! Woohoo!')
+    console.log('Server running at port 3006! Woohoo!')
 })
