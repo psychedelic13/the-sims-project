@@ -3,6 +3,18 @@ var router = express()
 
 var moment = require('moment')
 
+var multer  = require('multer')
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/productimages/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now())
+  }
+})
+
+var upload = multer({ storage: storage })
+
 var expressValidator = require('express-validator')
 var passport = require('passport')
 
@@ -13,14 +25,14 @@ const saltRounds = 10
 
 // Dashboard Routes
 
-router.get('/', function(req, res) {
+router.get('/', function(req, res, next) {
     // render to views/admin/dashboard.ejs template file
     res.render('admin/dashboard', {
         title: 'Perry in Disguise | Dashboard'
     })
 })
 
-router.get('/dashboard', function(req, res) {
+router.get('/dashboard', function(req, res, next) {
     // render to views/admin/dashboard.ejs template file
     res.render('admin/dashboard', {
         title: 'Perry in Disguise | Dashboard'
@@ -29,7 +41,7 @@ router.get('/dashboard', function(req, res) {
 
 // Inventory Routes
 
-router.get('/inventory', authenticationMiddleware(), function(req, res) {
+router.get('/inventory', authenticationMiddleware(), function(req, res, next) {
     const db = require('../db.js')
     let sql = `SELECT * FROM inventory_tbl WHERE is_deleted = ?;`
 
@@ -93,9 +105,9 @@ router.post('/inventory/product/add', function(req, res, next) {
         }
 
         const db = require('../db.js')
-        let sql = `INSERT INTO inventory_tbl(product_slug, product_category, product_origin, product_name, product_price, product_desc) VALUES (?, ?, ?, ?, ?, ?);`
+        let sql = `INSERT INTO inventory_tbl(product_slug, product_category, product_origin, product_name, product_price, product_cog, product_desc, total_stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`
 
-        db.query(sql, [product.productslug, product.productcat, product.productorigin, product.productname, product.productprice, product.productdesc], (error, results, fields) => {
+        db.query(sql, [product.productslug, product.productcat, product.productorigin, product.productname, product.productprice, 0, product.productdesc, 0], (error, results, fields) => {
             if (error) {
                 req.flash('error', error)
 
@@ -170,7 +182,6 @@ router.put('/inventory/product/edit/(:id)', function(req, res, next) {
     req.assert('productcat', 'Product Category is required').notEmpty()
     req.assert('productorigin', 'Product Inspiration is required').notEmpty()
     req.assert('productname', 'Product Name is required').notEmpty()
-    req.assert('productprice', 'Product Price is required').notEmpty()
     req.assert('productdesc', 'Product Description is required').notEmpty()
 
     var errors = req.validationErrors()
@@ -181,14 +192,13 @@ router.put('/inventory/product/edit/(:id)', function(req, res, next) {
             productcat: req.sanitize('productcat').escape().trim(),
             productorigin: req.sanitize('productorigin').escape().trim(),
             productname: req.sanitize('productname').escape().trim(),
-            productprice: req.sanitize('productprice').escape().trim(),
             productdesc: req.sanitize('productdesc').escape().trim()
         }
 
         const db = require('../db.js')
-        let sql = `UPDATE inventory_tbl SET product_slug = ?, product_category = ?, product_origin = ?, product_name = ?, product_price = ?, product_desc = ? WHERE product_no = ?;`
+        let sql = `UPDATE inventory_tbl SET product_slug = ?, product_category = ?, product_origin = ?, product_name = ?, product_desc = ? WHERE product_no = ?;`
 
-        db.query(sql, [product.productslug, product.productcat, product.productorigin, product.productname, parseFloat(product.productprice), product.productdesc, req.params.id], (error, results, fields) => {
+        db.query(sql, [product.productslug, product.productcat, product.productorigin, product.productname, product.productdesc, req.params.id], (error, results, fields) => {
             if (error) {
                 req.flash('error', error)
                 console.log('error')
@@ -200,7 +210,6 @@ router.put('/inventory/product/edit/(:id)', function(req, res, next) {
                     productcat: product.productcat,
                     productorigin: product.productorigin,
                     productname: product.productname,
-                    productprice: product.productprice,
                     productdesc: product.productdesc
                 })
             } else {
@@ -214,7 +223,6 @@ router.put('/inventory/product/edit/(:id)', function(req, res, next) {
                     productcat: product.productcat,
                     productorigin: product.productorigin,
                     productname: product.productname,
-                    productprice: product.productprice,
                     productdesc: product.productdesc
                 })
             }
@@ -235,7 +243,6 @@ router.put('/inventory/product/edit/(:id)', function(req, res, next) {
             productcat: req.body.productcat,
             productorigin: req.body.productorigin,
             productname: req.body.productname,
-            productprice: req.body.productprice,
             productdesc: req.body.productdesc
         })
     }
@@ -331,31 +338,66 @@ router.get('/inventory/product/(:id)', function(req, res, next) {
     })
 })
 
-router.get('/inventory/stocks/add/(:id)', function(req, res, next) {
+router.get('/inventory/product/images/(:id)', function(req, res, next) {
     const db = require('../db.js')
-    let sql = `SELECT * FROM product_no WHERE product_no = ?`
+    let sql = `SELECT * FROM productimage_tbl;`
 
-    db.query(sql, [req.params.id], (error, results, fields) => {
+    db.query(sql, (error, results, fields) => {
         if (error) {
             req.flash('error', error)
-            res.render('admin/inventory/stocks/add', {
-                title: 'Perry in Disguise | Stocks',
-                data: '',
-                productno: req.params.id,
-                sizeslug: '',
-                sizename: '',
-                initialstock: ''
+            // render to views/admin/inventory.ejs template file
+            res.render('admin/inventory/product/images', {
+                title: 'Perry in Disguise | Product Images',
+                data: ''
             })
         } else {
-            res.render('admin/inventory/stocks/add', {
-                title: 'Perry in Disguise | Stocks',
-                data: results,
-                productno: req.params.id,
-                sizeslug: '',
-                sizename: '',
-                initialstock: ''
+            // render to views/admin/inventory.ejs template file
+            res.render('admin/inventory/product/images', {
+                title: 'Perry in Disguise | Product Images',
+                data: results
             })
         }
+    })
+})
+
+router.post('inventory/product/images/(:id)', upload.array('images', 4), function(req, res, next) {
+
+})
+
+router.get('/inventory/stocks/add/(:id)', function(req, res, next) {
+    const db = require('../db.js')
+    let sql = `SELECT * FROM inventory_tbl WHERE product_no = ?`
+
+    db.query(sql, [req.params.id], (error, inventory_results, fields) => {
+        let sql = `SELECT * FROM product_tbl WHERE product_no = ?`
+        db.query(sql, [req.params.id], (error, results, fields) => {
+            if (error) {
+                req.flash('error', error)
+                res.render('admin/inventory/stocks/add', {
+                    title: 'Perry in Disguise | Stocks',
+                    data: '',
+                    product_name: inventory_results[0].product_name,
+                    cogs: '',
+                    shelflocation: '',
+                    productno: req.params.id,
+                    sizeslug: '',
+                    sizename: '',
+                    initialstock: ''
+                })
+            } else {
+                res.render('admin/inventory/stocks/add', {
+                    title: 'Perry in Disguise | Stocks',
+                    data: results,
+                    product_name: inventory_results[0].product_name,
+                    cogs: '',
+                    shelflocation: '',
+                    productno: req.params.id,
+                    sizeslug: '',
+                    sizename: '',
+                    initialstock: ''
+                })
+            }
+        })
     })
 })
 
@@ -367,10 +409,12 @@ router.post('/inventory/stocks/add/(:id)', function(req, res, next) {
         if (error) throw error
 
         var productno = req.params.id
+        var cog = req.body.cog
         var productslug = results[0].product_slug
         var sizeslug = req.body.sizeslug
         var sizename = req.body.sizename
         var initialstock = req.body.initialstock
+        var shelflocation = req.body.shelflocation
         var stock = []
         var rowinserted = 0
         var pastIds = []
@@ -380,35 +424,46 @@ router.post('/inventory/stocks/add/(:id)', function(req, res, next) {
             var slug = sizeslug[x]
             var name = sizename[x]
             var initstock = initialstock[x]
+            var shelflocation = shelflocation[x]
             if (sizeslug != '') {
                 stock.push({
                     product_sku: productsku,
                     product_no: productno,
                     size_slug: slug,
                     size_name: name,
+                    shelflocation: shelflocation,
                     total_stock: initstock,
                     available_stock: initstock,
                     reserved_stock: '0'
                 })
-                console.log(stock[x])
-                console.log(stock[x].product_sku);
             }
         }
 
-        for (var i = 0; i < stock.length; i++) {
-            let sql = `INSERT INTO stocks_tbl(product_sku, product_no, product_sizeslug, product_sizename, total_stock, available_stock, reserved_stock) VALUES (?, ?, ?, ?, ?, ?, ?);`
-            db.query(sql, [stock[i].product_sku, stock[i].product_no, stock[i].size_slug, stock[i].size_name, stock[i].total_stock, stock[i].available_stock, stock[i].reserved_stock], (error, results, fields) => {
+        var batch_id = []
 
+        for (var i = 0; i < stock.length; i++) {
+            let sql = `INSERT INTO product_tbl(product_sku, product_no, product_sizeslug, product_sizename, total_stock, available_stock, reserved_stock) VALUES (?, ?, ?, ?, ?, ?, ?);`
+            db.query(sql, [stock[i].product_sku, stock[i].product_no, stock[i].size_slug, stock[i].size_name, stock[i].total_stock, stock[i].available_stock, stock[i].reserved_stock], (error, results, fields) => {
+                let sql = `INSERT INTO stocks_tbl(product_sku, production_date, batch_cog, shelf_location, initial_stock, stock_left) VALUES (?, CURRENT_DATE(), ?, ?, ?, ?);`
+                db.query(sql, [stock[i].product_sku, cog, stock[i].shelflocation, stock[i].total_stock, stock[i].total_stock], (error, results, fields) => {
+                    db.query(`SELECT LAST_INSERT_ID() AS id;`, (error, results, error) => {
+                        batch_id[i] = results[0].id
+                    })
+                })
             })
             pastIds[i] = stock[i].product_sku
             rowinserted = rowinserted + 1
         }
 
         if (rowinserted != sizeslug.length) {
-            let sql = `DELETE FROM stocks_tbl WHERE product_sku = ?`
             for (x = 0; x < rowinserted; x++) {
+                let sql = `DELETE FROM product_tbl WHERE product_sku = ?`
                 db.query(sql, [pastIds[x]], (error, results, fields) => {
                     if (error) throw error
+                    let sql = `DELETE FROM stocks_tbl WHERE batch_no = ?`
+                    db.query(sql, [batch_id[x]], (error, results, fields) => {
+                        if (error) throw error
+                    })
                 })
             }
             req.flash('error', error)
@@ -426,50 +481,71 @@ router.post('/inventory/stocks/add/(:id)', function(req, res, next) {
 
 router.get('/inventory/stocks/update/add/(:id)', function(req, res, next) {
     const db = require('../db.js')
-    let sql = `SELECT * FROM stocks_tbl WHERE product_no = ?`
+    let sql = `SELECT * FROM inventory_tbl WHERE product_no = ?`
 
-    db.query(sql, [req.params.id], (error, results, fields) => {
-        if (error) {
-            req.flash('error', error)
-            res.render('admin/inventory/stocks/update/add', {
-                title: 'Perry in Disguise | Update Stocks',
-                productno: req.params.id,
-                data: '',
-                addstock: 0
-            })
-        } else {
-            res.render('admin/inventory/stocks/update/add', {
-                title: 'Perry in Disguise | Update Stocks',
-                productno: req.params.id,
-                data: results,
-                addstock: 0
-            })
-        }
+    db.query(sql, [req.params.id], (error, inventory_results, fields) => {
+        let sql = `SELECT * FROM product_tbl WHERE product_no = ?`
+        db.query(sql, [req.params.id], (error, results, fields) => {
+            if (error) {
+                req.flash('error', error)
+                res.render('admin/inventory/stocks/update/add', {
+                    title: 'Perry in Disguise | Add Stocks',
+                    data: '',
+                    product_name: inventory_results[0].product_name,
+                    cogs: '',
+                    shelflocation: '',
+                    productno: req.params.id
+                    addstock: 0
+                })
+            } else {
+                res.render('admin/inventory/stocks/update/add', {
+                    title: 'Perry in Disguise | Add Stocks',
+                    data: results,
+                    product_name: inventory_results[0].product_name,
+                    cogs: '',
+                    shelflocation: '',
+                    productno: req.params.id,
+                    data: results,
+                    addstock: 0
+                })
+            }
+        })
     })
 })
 
 router.post('/inventory/stocks/update/add/(:id)', function(req, res, next) {
+    var cog = req.body.cog
     var productsku = req.body.productsku
     var addstock = req.body.addstock
+    var shelflocation = req.body.shelflocation
     var rowsupdated = 0
+    var batch_id = []
 
     const db = require('../db.js')
-    let sql = `UPDATE stocks_tbl SET total_stock = (total_stock + ?), available_stock = (available_stock + ?) WHERE product_sku = ?;`
+    let sql = `UPDATE product_tbl SET total_stock = (total_stock + ?), available_stock = (available_stock + ?) WHERE product_sku = ?;`
 
     for (var i = 0; i < addstock.length; i++) {
         db.query(sql, [addstock[i], addstock[i], productsku[i]], (error, results, fields) => {
-
+            let sql = `INSERT INTO stocks_tbl(product_sku, production_date, batch_cog, shelf_location, initial_stock, stock_left) VALUES (?, CURRENT_DATE(), ?, ?, ?, ?);`
+            db.query(sql, [product_sku[i], cog, shelflocation[i], addstock[i], addstock[i]], (error, results, fields) => {
+                db.query(`SELECT LAST_INSERT_ID() AS id;`, (error, results, error) => {
+                    batch_id[i] = results[0].id
+                })
+            })
         })
         rowsupdated = rowsupdated + 1
     }
 
     if (rowsupdated != productsku.length) {
-        let sql = `UPDATE stocks_tbl SET total_stock = (total_stock + ?), available_stock = (available_stock + ?) WHERE product_sku = ?;`
         for (x = 0; x < rowsupdated; x++) {
-            db.query(sql, [addstock[i], addstock[i], productsku[i]], (err, results, fields) => {
-
+            let sql = `UPDATE product_tbl SET total_stock = (total_stock - ?), available_stock = (available_stock - ?) WHERE product_sku = ?;`
+            db.query(sql, [addstock[x], addstock[x], productsku[x]], (err, results, fields) => {
+                let sql = `DELETE FROM stocks_tbl WHERE batch_no = ?`
+                db.query(sql, [batch_id[x]], (error, results, fields) => {
+                    if (error) throw error
+                })
             })
-            rowsupdated = rowsupdated + 1
+            x = x + 1
             req.flash('error', err)
             console.log('error')
         }
@@ -483,27 +559,38 @@ router.post('/inventory/stocks/update/add/(:id)', function(req, res, next) {
     }
 })
 
+// Remove is not done yet!
 router.get('/inventory/stocks/update/remove/(:id)', function(req, res, next) {
     const db = require('../db.js')
-    let sql = `SELECT * FROM stocks_tbl WHERE product_no = ?`
+    let sql = `SELECT * FROM inventory_tbl WHERE product_no = ?`
 
-    db.query(sql, [req.params.id], (error, results, fields) => {
-        if (error) {
-            req.flash('error', error)
-            res.render('admin/inventory/stocks/update/remove', {
-                title: 'Perry in Disguise | Update Stocks',
-                productno: req.params.id,
-                data: '',
-                removestock: 0
-            })
-        } else {
-            res.render('admin/inventory/stocks/update/remove', {
-                title: 'Perry in Disguise | Update Stocks',
-                productno: req.params.id,
-                data: results,
-                removestock: 0
-            })
-        }
+    db.query(sql, [req.params.id], (error, inventory_results, fields) => {
+        let sql = `SELECT * FROM product_tbl WHERE product_no = ?`
+        db.query(sql, [req.params.id], (error, results, fields) => {
+            if (error) {
+                req.flash('error', error)
+                res.render('admin/inventory/stocks/update/remove', {
+                    title: 'Perry in Disguise | Stocks',
+                    data: '',
+                    product_name: inventory_results[0].product_name,
+                    cogs: '',
+                    shelflocation: '',
+                    productno: req.params.id
+                    removestock: 0
+                })
+            } else {
+                res.render('admin/inventory/stocks/update/remove', {
+                    title: 'Perry in Disguise | Remove Stocks',
+                    data: results,
+                    product_name: inventory_results[0].product_name,
+                    cogs: '',
+                    shelflocation: '',
+                    productno: req.params.id,
+                    data: results,
+                    removestock: 0
+                })
+            }
+        })
     })
 })
 
@@ -1495,21 +1582,12 @@ router.post('/register', function(req, res, next) {
             // Store hash in your password DB.
             const db = require('../db.js')
 
-            db.query(`INSERT INTO admin_tbl(last_name, first_name, username, password, account_type) VALUES (?, ?, ?, ?, ?)`, [account.lastname, account.firstname, account.username, hash, 'admin'], function(error, results, fields) {
+            db.query(`INSERT INTO accounts_tbl(last_name, first_name, username, password, account_type) VALUES (?, ?, ?, ?, ?)`, [account.lastname, account.firstname, account.username, hash, 'admin'], function(error, results, fields) {
                 if (error) throw error
 
-                db.query('SELECT LAST_INSERT_ID() as user_id', function(error, results, fields) {
-                    if (error) throw error
-
-                    const user_id = results[0]
-
-                    req.login(user_id, function(err) {
-                        res.render('admin/login', {
-                            title: 'Perry in Disguise | Login',
-                            message: 'Registration complete, please login to continue!'
-                        })
-                    })
-
+                res.render('admin/login', {
+                    title: 'Perry in Disguise | Login',
+                    message: 'Registration complete, please login to continue!'
                 })
             })
         })
@@ -1551,12 +1629,12 @@ router.use(function(err, req, res, next) {
 
 // Passport functions
 
-passport.serializeUser(function(user_id, done) {
-    done(null, user_id)
+passport.serializeUser(function(user, done) {
+    done(null, user)
 })
 
-passport.deserializeUser(function(user_id, done) {
-    done(null, user_id)
+passport.deserializeUser(function(user, done) {
+    done(null, user)
 })
 
 function authenticationMiddleware() {

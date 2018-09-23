@@ -34,6 +34,19 @@
                             <h4 class="card-title table-name">Add Size</h4>
                             <form class="form" action="/admin/inventory/stocks/add/<%= productno %>" method="post" name="addsize">
                                 <div class="form-group">
+                                    <label for="productname">Product Name</label>
+                                    <p><%= productname %></p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cog">Cost of Goods</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend bg-primary border-primary">
+                                            <span class="input-group-text bg-transparent text-white">PHP</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="cog" name="cog" placeholder="Production Cost" value="<%= cog %>" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
                                     <div class="table-responsive">
                                         <table id="addstock" class="table table-striped">
                                             <thead>
@@ -42,6 +55,7 @@
                                                     <th>Product Size(Slug)</th>
                                                     <th>Product Size(Name)</th>
                                                     <th>Initial Stock</th>
+                                                    <th>Shelf Location</th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
@@ -67,6 +81,9 @@
                                                     </td>
                                                     <td>
                                                         <input class="form-control" type="text" name="initialstock[]" value="<%= initialstock %>">
+                                                    </td>
+                                                    <td>
+                                                        <input class="form-control" type="text" name="shelflocation[]" value="<%= shelflocation %>">
                                                     </td>
                                                     <!-- Add more rows -->
                                                     <td><button class="form-control" type="button" name="&ps;" onclick="return moretextbox();"></button></td>
