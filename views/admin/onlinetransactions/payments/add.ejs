@@ -1,0 +1,96 @@
+<% include ../../partials/admin-header.ejs %>
+    <!-- MAIN CONTENTS -->
+        <!-- partial -->
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <% if (messages.error) { %>
+                        <div class="row purchace-popup">
+                            <div class="col-12">
+                                <span class="d-flex alifn-items-center">
+                                    <p class="text-danger"><%- messages.error %></p>
+                                    <i class="mdi mdi-close popup-dismiss"></i>
+                                </span>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <% if (messages.success) { %>
+                        <div class="row purchace-popup">
+                            <div class="col-12">
+                                <span class="d-flex alifn-items-center">
+                                    <p class="text-success"><%- messages.success %></p>
+                                    <i class="mdi mdi-close popup-dismiss"></i>
+                                </span>
+                            </div>
+                        </div>
+                    <% } %>
+
+                <!-- INDEX CONTAINER -->
+
+                <!-- BLOCK QUOTE -->
+                <div class="col-lg-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <a href="/admin/onlinetransactions/payments"><button type="button" class="btn btn-outline-success title-btn">&lt;</button></a>
+                            <i class="menu-icon mdi mdi-plus text-info icon-md table-icon"></i>
+                            <h4 class="card-title title">Add Payment</h4>
+                            <div class="form">
+                                <form class="form" action="/admin/onlinetransactions/payments/add/<%= transactionno %>" method="POST" name="addpayment">
+                                    <div class="form-group">
+                                        <label for="payorsname">Payor's Name</label>
+                                        <input type="text" class="form-control" id="payorsname" name="payorsname" placeholder="Payor's Name" value="<%= payorsname %>" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <p class="card-description">Payment Mode</p>
+                                        <div class="form-radio">
+                                            <label class="form-check-label">
+                                            <input type="radio" class="form-check-input" name="paymentmode" id="bdo" value="bdo"> BDO Deposit
+                                            <i class="input-helper"></i></label>
+                                        </div>
+                                        <div class="form-radio">
+                                            <label class="form-check-label">
+                                            <input type="radio" class="form-check-input" name="paymentmode" id="cash" value="cash"> Cash
+                                            <i class="input-helper"></i></label>
+                                        </div>
+                                    </div>
+                                    <!-- DATE PICKER FOR PAYMENT DATE -->
+                                    <div class="form-group">
+                                        <label for="paymentdate">Payment Date</label>
+                                        <input type="date" class="form-control" name="paymentdate" id="paymentdate" value="<%= paymentdate %>">
+                                    </div>
+                                    <div class="form-group">
+                                            <label for="amount">Amount</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend bg-primary border-primary">
+                                                <span class="input-group-text bg-transparent text-white">PHP</span>
+                                            </div>
+                                            <input type="text" class="form-control" id="amount" name="amount" placeholder="Payment Amount" value="<%= amount %>" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-success btn-submit" type="submit" name="addproduct" value="OKKUUUURRRTT">Add Payment</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- END BLOCK QUOTE -->
+
+
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+            <footer class="footer">
+                <div class="container-fluid clearfix">
+                    <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018
+                    <a href="http://www.bootstrapdash.com/" target="_blank">Bootstrapdash</a>. All rights reserved.</span>
+                    <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with
+                    <i class="mdi mdi-heart text-danger"></i>
+                    </span>
+                </div>
+            </footer>
+                  <!-- partial -->
+        </div>
+    <!-- main-panel ends -->
+<% include ../../partials/admin-footer.ejs %>

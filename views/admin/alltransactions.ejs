@@ -1,0 +1,114 @@
+<% include partials/admin-header.ejs %>
+    <!-- MAIN CONTENTS -->
+    <!-- partial -->
+    <div class="main-panel">
+        <div class="content-wrapper">
+            <% if (messages.error) { %>
+                <div class="row purchace-popup">
+                    <div class="col-12">
+                        <span class="d-flex alifn-items-center">
+                            <p class="text-danger"><%- messages.error %></p>
+                            <i class="mdi mdi-close popup-dismiss"></i>
+                        </span>
+                    </div>
+                </div>
+            <% } %>
+
+            <% if (messages.success) { %>
+                <div class="row purchace-popup">
+                    <div class="col-12">
+                        <span class="d-flex alifn-items-center">
+                            <p class="text-success"><%- messages.success %></p>
+                            <i class="mdi mdi-close popup-dismiss"></i>
+                        </span>
+                    </div>
+                </div>
+            <% } %>
+
+            <div class="row">
+                <div id="main" class="col-lg-12 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body">
+                            <i class="menu-icon mdi mdi-cube text-info icon-md table-icon"></i>
+                            <h4 class="card-title table-name">Online Transaction</h4>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Customer Name</th>
+                                            <th>Transaction Date</th>
+                                            <th>Deadline Date</th>
+                                            <th>Total Amount</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <!--
+                                        Using forEach loop for the products array
+
+                                        myArray.forEach(function(el, index) {
+                                            // el - current element, i - index
+                                        });
+                                    -->
+                                    <tbody>
+                                        <% if(data) { %>
+                                            <% data.forEach(function(onlinetransaction) { %>
+                                                <tr>
+                                                    <td><%= onlinetransaction.transaction_no %></td>
+                                                    <td><%= onlinetransaction.customer_name %></td>
+                                                    <td><%= moment(onlinetransaction.transaction_date).format('YYYY-MM-DD') %></td>
+                                                    <td><%= moment(onlinetransaction.payment_deadline).format('YYYY-MM-DD') %></td>
+                                                    <td><%= onlinetransaction.total_amount %></td>
+                                                    <td><%= onlinetransaction.status %></td>
+                                                    <td>
+                                                        <!-- PUT CONDITIONING FOR BUTTONS HERE -->
+                                                        <% if (onlinetransaction.status == 1) { %>
+                                                            <a href="/admin/onlinetransactions/edit/<%= onlinetransaction.transaction_no %>" class="btn btn-icons btn-primary"><i class="mdi mdi-pencil"></i></a>
+                                                            <a href="#" class="btn btn-icons btn-info"><i class="mdi mdi-account-card-details"></i></a>
+                                                            <a href="#" class="btn btn-icons btn-info"><i class="mdi mdi-view-list"></i></a>
+                                                            <a href="/admin/onlinetransactions/payments/add/<%= onlinetransaction.transaction_no %>" class="btn btn-icons btn-success"><i class="mdi mdi-cash-multiple"></i></a>
+                                                        <% } else if (onlinetransaction.status == 2) { %>
+                                                            <a href="/admin/onlinetransactions/edit/<%= onlinetransaction.transaction_no %>" class="btn btn-icons btn-primary"><i class="mdi mdi-pencil"></i></a>
+                                                            <a href="#" class="btn btn-icons btn-info"><i class="mdi mdi-account-card-details"></i></a>
+                                                            <a href="#" class="btn btn-icons btn-info"><i class="mdi mdi-view-list"></i></a>
+                                                            <a href="/admin/onlinetransactions/payments/display/<%= onlinetransaction.transaction_no %>" class="btn btn-icons btn-info"><i class="mdi mdi-cash-multiple"></i></a>
+                                                            <a href="/admin/onlinetransactions/shippings/add/<%= onlinetransaction.transaction_no %>" class="btn btn-icons btn-success"><i class="mdi mdi-truck-fast"></i></a>
+                                                        <% } else if (onlinetransaction.status == 3) { %>
+                                                            <a href="/admin/onlinetransactions/edit/<%= onlinetransaction.transaction_no %>" class="btn btn-icons btn-primary"><i class="mdi mdi-pencil"></i></a>
+                                                            <a href="#" class="btn btn-icons btn-info"><i class="mdi mdi-account-card-details"></i></a>
+                                                            <a href="#" class="btn btn-icons btn-info"><i class="mdi mdi-view-list"></i></a>
+                                                            <a href="/admin/onlinetransactions/payments/display/<%= onlinetransaction.transaction_no %>" class="btn btn-icons btn-info"><i class="mdi mdi-cash-multiple"></i></a>
+                                                            <a href="/admin/onlinetransactions/shippings/add/<%= onlinetransaction.transaction_no %>" class="btn btn-icons btn-info"><i class="mdi mdi-truck-fast"></i></a>
+                                                            <a href="#" class="btn btn-icons btn-success"><i class="mdi mdi-folder-move"></i></a>
+                                                            <a href="#" class="btn btn-icons btn-danger"><i class="mdi mdi-delete-forever"></i></a>
+                                                        <% } %>
+                                                    </td>
+                                                </tr>
+                                            <% }) %>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- END BLOCK QUOTE -->
+            </div>
+
+        <!-- content-wrapper ends -->
+        </div>
+        <!-- partial:partials/_footer.html -->
+        <footer class="footer">
+            <div class="container-fluid clearfix">
+                <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018
+                    <a href="http://www.bootstrapdash.com/" target="_blank">Bootstrapdash</a>. All rights reserved.</span>
+                <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with
+                    <i class="mdi mdi-heart text-danger"></i>
+                </span>
+            </div>
+        </footer>
+    <!-- partial -->
+    </div>
+    <!-- main-panel ends -->
+<% include partials/admin-footer.ejs %>
