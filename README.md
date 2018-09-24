@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 # the-sims-project
 
 `SIMS - Sales and Inventory Monitoring System`
@@ -19,4 +17,3 @@ An ecommerce website that covers customer side and admin side.
 - Shipping
 - Sales
 - Expenses
->>>>>>> release-0-2

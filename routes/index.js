@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 var express = require('express')
 var router = express()
 
@@ -161,4 +159,3 @@ function authenticationMiddleware() {
 }
 
 module.exports = router;
->>>>>>> release-0-2

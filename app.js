@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 var express = require('express')
 var path = require('path')
 var cookieParser = require('cookie-parser')
@@ -123,4 +121,3 @@ passport.use(new LocalStrategy(
 app.listen(3006, function() {
     console.log('Server running at port 3006! Woohoo!')
 })
->>>>>>> release-0-2

@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 
 function moretextbox() {
     var tableRef = document.getElementById('addstock').getElementsByTagName('tbody')[0];
@@ -42,4 +40,3 @@ function moretextbox() {
     newCell4.appendChild(shelflocation);
     return false;
 }
->>>>>>> release-0-2
