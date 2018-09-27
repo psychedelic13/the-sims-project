@@ -61,7 +61,7 @@
                                                     <td>
                                                         <a href="/admin/inventory/product/edit/<%= product.product_no %>" class="btn btn-icons btn-primary"><i class="mdi mdi-pencil"></i></a><!-- Edit Product -->
                                                         <a href="/admin/inventory/product/<%= product.product_no %>" class="btn btn-icons btn-info"><i class="mdi mdi-view-list"></i></a><!-- Display Product -->
-                                                        <a href="/admin/inventory/stocks/update/<%= product.product_no %>" class="btn btn-icons btn-success"><i class="mdi mdi-library-plus"></i></a><!-- Display Product -->
+                                                        <a href="/admin/inventory/stocks/add/<%= product.product_no %>" class="btn btn-icons btn-success"><i class="mdi mdi-library-plus"></i></a><!-- Display Product -->
                                                         <a href="/admin/inventory/product/phaseout/<%= product.product_no %>" class="btn btn-icons btn-warning"><i class="mdi mdi-minus-circle-outline"></i></a><!-- Phaseout Product -->
                                                         <form class="form-button" action="/admin/inventory/product/delete/<%= product.product_no %>" method="post">
                                                             <button type="submit" name="delete" value="delete" onclick="return confirm('Are you sure you want to delete?')" class="btn btn-icons btn-danger"><i class="mdi mdi-delete-forever"></i></button><!-- Delete Product -->

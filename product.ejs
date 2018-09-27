@@ -88,7 +88,8 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <h4>Batch Stocks</h4>
+                            <hr>
+                            <h4>Stocks</h4>
                             <div class="table-responsive">
                                 <table class="table table-striped">
                                     <thead>
@@ -96,6 +97,7 @@
                                             <th>Product SKU</th>
                                             <th>Production Date</th>
                                             <th>Batch Cost of Goods</th>
+                                            <th>Shelf Location</th>
                                             <th>Initial Stock</th>
                                             <th>Stocks Left</th>
                                         </tr>
@@ -107,6 +109,7 @@
                                                     <td><%= batch.product_sku %></td>
                                                     <td><%= moment(batch.production_date).format('YYYY-MM-DD') %></td>
                                                     <td><%= batch.batch_cog %></td>
+                                                    <td><%= batch.shelf_location %></td>
                                                     <td><%= batch.initial_stock %></td>
                                                     <td><%= batch.stock_left %></td>
                                                 </tr>

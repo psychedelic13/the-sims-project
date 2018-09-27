@@ -3,23 +3,23 @@ var router = express()
 
 var moment = require('moment')
 
-var multer  = require('multer')
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/productimages/')
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now())
-  }
-})
-
-var upload = multer({ storage: storage })
-
 var expressValidator = require('express-validator')
 var passport = require('passport')
 
 var bcrypt = require('bcrypt-nodejs')
 const saltRounds = 10
+
+var multer  = require('multer')
+var storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, 'public/productimages/')
+  },
+  filename: function (req, file, callback) {
+    callback(null, file.fieldname + '-' + Date.now())
+  }
+})
+
+var upload = multer({ storage: storage })
 
 // Admin Routes
 
@@ -165,7 +165,7 @@ router.get('/inventory/product/edit/(:id)', function(req, res, next) {
             // render to view/inventory/editproduct.ejs template file
             res.render('admin/inventory/product/edit', {
                 title: 'Perry in Disguise | Edit Product',
-                productno: results[0].product_no,
+                productno: req.params.id,
                 productslug: results[0].product_slug,
                 productcat: results[0].product_category,
                 productorigin: results[0].product_origin,
@@ -177,7 +177,7 @@ router.get('/inventory/product/edit/(:id)', function(req, res, next) {
     })
 })
 
-router.put('/inventory/product/edit/(:id)', function(req, res, next) {
+router.post('/inventory/product/edit/(:id)', function(req, res, next) {
     req.assert('productslug', 'Product Slug is required').notEmpty()
     req.assert('productcat', 'Product Category is required').notEmpty()
     req.assert('productorigin', 'Product Inspiration is required').notEmpty()
@@ -298,10 +298,11 @@ router.get('/inventory/product/(:id)', function(req, res, next) {
                 product_origin: product_results[0].product_origin,
                 product_name: product_results[0].product_name,
                 product_price: product_results[0].product_price,
+                product_cog: product_results[0].product_cog,
                 product_desc: product_results[0].product_desc
             })
         } else {
-            let sql = `SELECT * FROM stocks_tbl WHERE product_no = ?`
+            let sql = `SELECT * FROM product_tbl WHERE product_no = ?`
             db.query(sql, [req.params.id], (error, stock_results, fields) => {
                 if (error) throw error
 
@@ -316,21 +317,46 @@ router.get('/inventory/product/(:id)', function(req, res, next) {
                         product_origin: product_results[0].product_origin,
                         product_name: product_results[0].product_name,
                         product_price: product_results[0].product_price,
+                        product_cog: product_results[0].product_cog,
                         product_desc: product_results[0].product_desc
                     })
                 } else {
-                    res.render('admin/inventory/product', {
-                        title: 'Perry in Disguise | Product',
-                        data1: product_results,
-                        data2: stock_results,
-                        check: 'yes',
-                        product_no: product_results[0].product_no,
-                        product_slug: product_results[0].product_slug,
-                        product_cat: product_results[0].product_category,
-                        product_origin: product_results[0].product_origin,
-                        product_name: product_results[0].product_name,
-                        product_price: product_results[0].product_price,
-                        product_desc: product_results[0].product_desc
+                    let sql = `SELECT * FROM stocks_tbl WHERE product_no = ?`
+                    db.query(sql, [req.params.id], (error, batch_results, fields) => {
+                        if (error) throw error
+
+                        if (stock_results == '') {
+                            res.render('admin/inventory/product', {
+                                title: 'Perry in Disguise | Product',
+                                data1: product_results,
+                                data2: stock_results,
+                                check: 'yes',
+                                product_no: product_results[0].product_no,
+                                product_slug: product_results[0].product_slug,
+                                product_cat: product_results[0].product_category,
+                                product_origin: product_results[0].product_origin,
+                                product_name: product_results[0].product_name,
+                                product_price: product_results[0].product_price,
+                                product_desc: product_results[0].product_desc
+                            })
+                        } else {
+                            res.render('admin/inventory/product', {
+                                title: 'Perry in Disguise | Product',
+                                data1: product_results,
+                                data2: stock_results,
+                                data3: batch_results,
+                                moment: moment,
+                                check: 'yes',
+                                product_no: product_results[0].product_no,
+                                product_slug: product_results[0].product_slug,
+                                product_cat: product_results[0].product_category,
+                                product_origin: product_results[0].product_origin,
+                                product_name: product_results[0].product_name,
+                                product_price: product_results[0].product_price,
+                                product_cog: product_results[0].product_cog,
+                                product_desc: product_results[0].product_desc
+                            })
+                        }
                     })
                 }
             })
@@ -348,20 +374,38 @@ router.get('/inventory/product/images/(:id)', function(req, res, next) {
             // render to views/admin/inventory.ejs template file
             res.render('admin/inventory/product/images', {
                 title: 'Perry in Disguise | Product Images',
-                data: ''
+                data: '',
+                product_no: req.params.id
             })
         } else {
             // render to views/admin/inventory.ejs template file
             res.render('admin/inventory/product/images', {
                 title: 'Perry in Disguise | Product Images',
-                data: results
+                data: results,
+                product_no: req.params.id
             })
         }
     })
 })
 
-router.post('inventory/product/images/(:id)', upload.array('images', 4), function(req, res, next) {
+router.post('inventory/product/images/add/(:id)', upload.array('images', 4), function(req, res, next) {
+    const db = require('../db.js')
+    let sql = `INSERT INTO productimage_tbl(product_no, image_path) VALUES (?, ?)`
 
+    db.query(sql, [req.params.id, req.files.destination + req.files.filename], (error, results, fields) => {
+        if (error) {
+            req.flash('error', error)
+
+            res.render('admin/inventory/product/images', {
+                title: 'Perry in Disguise | Product images',
+                data: ''
+            })
+        } else {
+            res.render('admin/inventory/product/images', {
+                title: results
+            })
+        }
+    })
 })
 
 router.get('/inventory/stocks/add/(:id)', function(req, res, next) {
@@ -377,8 +421,7 @@ router.get('/inventory/stocks/add/(:id)', function(req, res, next) {
                     title: 'Perry in Disguise | Stocks',
                     data: '',
                     product_name: inventory_results[0].product_name,
-                    cogs: '',
-                    shelflocation: '',
+                    cog: '',
                     productno: req.params.id,
                     sizeslug: '',
                     sizename: '',
@@ -389,8 +432,7 @@ router.get('/inventory/stocks/add/(:id)', function(req, res, next) {
                     title: 'Perry in Disguise | Stocks',
                     data: results,
                     product_name: inventory_results[0].product_name,
-                    cogs: '',
-                    shelflocation: '',
+                    cog: '',
                     productno: req.params.id,
                     sizeslug: '',
                     sizename: '',
@@ -414,7 +456,6 @@ router.post('/inventory/stocks/add/(:id)', function(req, res, next) {
         var sizeslug = req.body.sizeslug
         var sizename = req.body.sizename
         var initialstock = req.body.initialstock
-        var shelflocation = req.body.shelflocation
         var stock = []
         var rowinserted = 0
         var pastIds = []
@@ -424,14 +465,12 @@ router.post('/inventory/stocks/add/(:id)', function(req, res, next) {
             var slug = sizeslug[x]
             var name = sizename[x]
             var initstock = initialstock[x]
-            var shelflocation = shelflocation[x]
             if (sizeslug != '') {
                 stock.push({
                     product_sku: productsku,
                     product_no: productno,
                     size_slug: slug,
                     size_name: name,
-                    shelflocation: shelflocation,
                     total_stock: initstock,
                     available_stock: initstock,
                     reserved_stock: '0'
@@ -444,8 +483,8 @@ router.post('/inventory/stocks/add/(:id)', function(req, res, next) {
         for (var i = 0; i < stock.length; i++) {
             let sql = `INSERT INTO product_tbl(product_sku, product_no, product_sizeslug, product_sizename, total_stock, available_stock, reserved_stock) VALUES (?, ?, ?, ?, ?, ?, ?);`
             db.query(sql, [stock[i].product_sku, stock[i].product_no, stock[i].size_slug, stock[i].size_name, stock[i].total_stock, stock[i].available_stock, stock[i].reserved_stock], (error, results, fields) => {
-                let sql = `INSERT INTO stocks_tbl(product_sku, production_date, batch_cog, shelf_location, initial_stock, stock_left) VALUES (?, CURRENT_DATE(), ?, ?, ?, ?);`
-                db.query(sql, [stock[i].product_sku, cog, stock[i].shelflocation, stock[i].total_stock, stock[i].total_stock], (error, results, fields) => {
+                let sql = `INSERT INTO stocks_tbl(product_sku, production_date, batch_cog, initial_stock, stock_left) VALUES (?, CURRENT_DATE(), ?, ?, ?, ?);`
+                db.query(sql, [stock[i].product_sku, cog, stock[i].total_stock, stock[i].available_stock], (error, results, fields) => {
                     db.query(`SELECT LAST_INSERT_ID() AS id;`, (error, results, error) => {
                         batch_id[i] = results[0].id
                     })
@@ -491,19 +530,17 @@ router.get('/inventory/stocks/update/add/(:id)', function(req, res, next) {
                 res.render('admin/inventory/stocks/update/add', {
                     title: 'Perry in Disguise | Add Stocks',
                     data: '',
-                    product_name: inventory_results[0].product_name,
-                    cogs: '',
-                    shelflocation: '',
-                    productno: req.params.id
+                    productname: inventory_results[0].product_name,
+                    cog: '',
+                    productno: req.params.id,
                     addstock: 0
                 })
             } else {
                 res.render('admin/inventory/stocks/update/add', {
                     title: 'Perry in Disguise | Add Stocks',
                     data: results,
-                    product_name: inventory_results[0].product_name,
-                    cogs: '',
-                    shelflocation: '',
+                    productname: inventory_results[0].product_name,
+                    cog: '',
                     productno: req.params.id,
                     data: results,
                     addstock: 0
@@ -517,7 +554,6 @@ router.post('/inventory/stocks/update/add/(:id)', function(req, res, next) {
     var cog = req.body.cog
     var productsku = req.body.productsku
     var addstock = req.body.addstock
-    var shelflocation = req.body.shelflocation
     var rowsupdated = 0
     var batch_id = []
 
@@ -526,8 +562,8 @@ router.post('/inventory/stocks/update/add/(:id)', function(req, res, next) {
 
     for (var i = 0; i < addstock.length; i++) {
         db.query(sql, [addstock[i], addstock[i], productsku[i]], (error, results, fields) => {
-            let sql = `INSERT INTO stocks_tbl(product_sku, production_date, batch_cog, shelf_location, initial_stock, stock_left) VALUES (?, CURRENT_DATE(), ?, ?, ?, ?);`
-            db.query(sql, [product_sku[i], cog, shelflocation[i], addstock[i], addstock[i]], (error, results, fields) => {
+            let sql = `INSERT INTO stocks_tbl(product_sku, production_date, batch_cog, initial_stock, stock_left) VALUES (?, CURRENT_DATE(), ?, ?, ?, ?);`
+            db.query(sql, [product_sku[i], cog, addstock[i], addstock[i]], (error, results, fields) => {
                 db.query(`SELECT LAST_INSERT_ID() AS id;`, (error, results, error) => {
                     batch_id[i] = results[0].id
                 })
@@ -574,8 +610,7 @@ router.get('/inventory/stocks/update/remove/(:id)', function(req, res, next) {
                     data: '',
                     product_name: inventory_results[0].product_name,
                     cogs: '',
-                    shelflocation: '',
-                    productno: req.params.id
+                    productno: req.params.id,
                     removestock: 0
                 })
             } else {
@@ -584,7 +619,6 @@ router.get('/inventory/stocks/update/remove/(:id)', function(req, res, next) {
                     data: results,
                     product_name: inventory_results[0].product_name,
                     cogs: '',
-                    shelflocation: '',
                     productno: req.params.id,
                     data: results,
                     removestock: 0
@@ -917,11 +951,11 @@ router.post('/stalltransactions/add', function(req, res, next) {
 
         var insertedRows = 0
 
-        let sql = `SELECT LAST_INSERT_ID() as lastId`
+        sql = `SELECT LAST_INSERT_ID() as lastId`
 
         db.query(sql, (error, results, fields) => {
             if (error) throw error
-            var lastId = result[0].lastId
+            var lastId = results[0].lastId
 
             let sql = `INSERT INTO stallitems_tbl(stalltransaction_no, stallitem_no, product_sku, quantity) VALUE (?, ?, ?, ?)`
 
@@ -985,9 +1019,9 @@ router.get('/onlinetransactions/payments/add/(:id)', function(req, res, next) {
     let sql = `SELECT * FROM transaction_tbl WHERE transaction_no = ?`
 
     db.query(sql, [req.params.id], (error, results, fields) => {
-        if (err) throw err
+        if (error) throw error
 
-        if (rows.length <= 0) {
+        if (results.length <= 0) {
             req.flash('error', 'Transaction record not found with reference no. of ' + req.params.id)
             res.redirect('/admin/onlinetransactions')
         } else {
@@ -1607,25 +1641,25 @@ router.post('/register', function(req, res, next) {
     }
 })
 
-// Error 404 catcher
-router.use(function(req, res, next) {
-    res.render('admin/error-404', {
-        title: 'Perry in Disguise | Error 404 : Not Found'
-    })
-})
-
-// Error Handler
-router.use(function(err, req, res, next) {
-    // Set locals , only providing error in development
-    res.locals.message = err.message
-    res.locals.error = req.app.get('env') === 'development' ? err : {}
-
-    // Render the error page
-    res.status(err.status || 500)
-    res.render('admin/error-500', {
-        title: 'Perry in Disguise | Error 500 : Internal Server Error'
-    })
-})
+// // Error 404 catcher
+// router.use(function(req, res, next) {
+//     res.render('admin/error-404', {
+//         title: 'Perry in Disguise | Error 404 : Not Found'
+//     })
+// })
+//
+// // Error Handler
+// router.use(function(err, req, res, next) {
+//     // Set locals , only providing error in development
+//     res.locals.message = err.message
+//     res.locals.error = req.app.get('env') === 'development' ? err : {}
+//
+//     // Render the error page
+//     res.status(err.status || 500)
+//     res.render('admin/error-500', {
+//         title: 'Perry in Disguise | Error 500 : Internal Server Error'
+//     })
+// })
 
 // Passport functions
 
