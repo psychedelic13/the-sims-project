@@ -133,12 +133,12 @@ router.post('/customer/account/loginsignup/signup', function(req, res, next) {
     })
 })
 
-// Error 404 catcher
-router.use(function(req, res, next) {
-    res.render('error-404', {
-        title: 'Perry in Disguise | Error 404 : Not Found'
-    })
-})
+// // Error 404 catcher
+// router.use(function(req, res, next) {
+//     res.render('error-404', {
+//         title: 'Perry in Disguise | Error 404 : Not Found'
+//     })
+// })
 
 // Passport functions
 

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 23, 2018 at 02:54 AM
+-- Generation Time: Sep 27, 2018 at 04:31 AM
 -- Server version: 5.7.23-0ubuntu0.16.04.1
 -- PHP Version: 7.0.32-0ubuntu0.16.04.1
 
@@ -92,13 +92,6 @@ CREATE TABLE `customer_tbl` (
   `cancelled_trans` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `customer_tbl`
---
-
-INSERT INTO `customer_tbl` (`customer_no`, `account_no`, `last_name`, `first_name`, `email_address`, `successful_trans`, `cancelled_trans`) VALUES
-(1, 2, 'waldorf', 'Blair', 'waldorfdesigns@gossipgirl.com', 0, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -116,28 +109,6 @@ CREATE TABLE `demand_tbl` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `expenses_tbl`
---
-
-CREATE TABLE `expenses_tbl` (
-  `expense_no` int(11) NOT NULL,
-  `expense_biller` varchar(30) NOT NULL,
-  `expense_date` date NOT NULL,
-  `expense_desc` longtext NOT NULL,
-  `amount` decimal(10,2) NOT NULL,
-  `is_deleted` char(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `expenses_tbl`
---
-
-INSERT INTO `expenses_tbl` (`expense_no`, `expense_biller`, `expense_date`, `expense_desc`, `amount`, `is_deleted`) VALUES
-(1, 'MERALCO', '2018-08-15', 'FOR THE MONTH OF JULY', '1000.00', '0');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `inventory_tbl`
 --
 
@@ -150,21 +121,10 @@ CREATE TABLE `inventory_tbl` (
   `product_price` decimal(10,2) NOT NULL,
   `product_cog` decimal(10,2) NOT NULL,
   `product_desc` longtext NOT NULL,
-  `stock_left` int(11) NOT NULL,
+  `total_stock` int(11) NOT NULL,
   `is_phased_out` char(1) NOT NULL DEFAULT '0',
   `is_deleted` char(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `inventory_tbl`
---
-
-INSERT INTO `inventory_tbl` (`product_no`, `product_slug`, `product_category`, `product_origin`, `product_name`, `product_price`, `product_cog`, `product_desc`, `stock_left`, `is_phased_out`, `is_deleted`) VALUES
-(1, 'MVHPGR', 'Movies', 'Harry Potter', 'Gryffindor', '1300.00', '0.00', 'ff', 0, '0', '1'),
-(2, 'MVHPRC', 'Movies', 'Harry Potter', 'Ravenclaw Inspired Jacket', '1200.00', '0.00', 'Raveeenclaawwww', 0, '0', '0'),
-(3, 'MVMUDP', 'Movies', 'Marvel Universe', 'Deadpool Inspired Jacket', '1300.00', '0.00', 'Ryan Reynolds', 0, '0', '0'),
-(4, 'MVHPHP', 'Movies', 'Harry Potter', 'Hufflepuff Inspired Jacket', '1200.00', '0.00', 'Ugh', 0, '0', '0'),
-(5, 'MVRDCH', 'Movies', 'Riverdale', 'Cheerleading Inspired Clothing', '1200.00', '0.00', 'From CW&#x27;s Riverdale', 0, '0', '0');
 
 -- --------------------------------------------------------
 
@@ -195,13 +155,6 @@ CREATE TABLE `payment_tbl` (
   `is_deleted` char(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `payment_tbl`
---
-
-INSERT INTO `payment_tbl` (`payment_no`, `transaction_no`, `payors_name`, `payment_date`, `payment_mode`, `amount`, `is_deleted`) VALUES
-(7, 1, 'Ryan Reynolds', '2018-08-17', 'bdo', '1200.00', '0');
-
 -- --------------------------------------------------------
 
 --
@@ -209,7 +162,7 @@ INSERT INTO `payment_tbl` (`payment_no`, `transaction_no`, `payors_name`, `payme
 --
 
 CREATE TABLE `productimage_tbl` (
-  `img_no` int(11) NOT NULL,
+  `image_no` int(11) NOT NULL,
   `product_no` int(11) NOT NULL,
   `image_path` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -242,6 +195,13 @@ CREATE TABLE `sessions` (
   `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `sessions`
+--
+
+INSERT INTO `sessions` (`session_id`, `expires`, `data`) VALUES
+('dhicRTXLRITDFK4ygebO8uD5npSYlPU0', 1538036997, '{"cookie":{"originalMaxAge":59999,"expires":"2018-09-27T08:29:52.532Z","httpOnly":true,"path":"/"},"flash":{},"passport":{"user":[{"account_no":1,"username":"blairwaldorf","password":"$2a$10$Nsu.UojRxZSq/UvudEP16erciWF56XH6XLe6jM/hbktSYGvnP13sW","last_name":"Waldorf","first_name":"Blair","account_type":"superadmin","is_activated":1}]}}');
+
 -- --------------------------------------------------------
 
 --
@@ -256,13 +216,6 @@ CREATE TABLE `shipping_tbl` (
   `shipping_notes` longtext NOT NULL,
   `is_deleted` char(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `shipping_tbl`
---
-
-INSERT INTO `shipping_tbl` (`shipping_no`, `transaction_no`, `courier`, `release_date`, `shipping_notes`, `is_deleted`) VALUES
-(1, 1, 'NinjaVan', '2018-08-18', 'TRACKING #123412421', '0');
 
 -- --------------------------------------------------------
 
@@ -300,10 +253,10 @@ CREATE TABLE `stalltransaction_tbl` (
 
 CREATE TABLE `stocks_tbl` (
   `batch_no` int(11) NOT NULL,
+  `product_no` int(11) NOT NULL,
   `product_sku` varchar(8) NOT NULL,
-  `production_date` int(11) NOT NULL,
+  `production_date` date NOT NULL,
   `batch_cog` decimal(10,2) NOT NULL,
-  `shelf_location` varchar(8) NOT NULL,
   `initial_stock` int(11) NOT NULL,
   `stock_left` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -326,13 +279,6 @@ CREATE TABLE `transaction_tbl` (
   `total_amount` decimal(10,2) NOT NULL,
   `is_deleted` char(255) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `transaction_tbl`
---
-
-INSERT INTO `transaction_tbl` (`transaction_no`, `customer_no`, `transaction_date`, `status`, `payment_deadline`, `shipping_option`, `shipping_fee`, `payment_mode`, `total_amount`, `is_deleted`) VALUES
-(1, 1, '2018-08-15', '2', '2018-08-18', 'provincial', '120.00', 'bdo', '1200.00', '0');
 
 --
 -- Indexes for dumped tables
@@ -370,12 +316,6 @@ ALTER TABLE `demand_tbl`
   ADD KEY `fk_product_sku` (`product_sku`);
 
 --
--- Indexes for table `expenses_tbl`
---
-ALTER TABLE `expenses_tbl`
-  ADD PRIMARY KEY (`expense_no`);
-
---
 -- Indexes for table `inventory_tbl`
 --
 ALTER TABLE `inventory_tbl`
@@ -399,7 +339,7 @@ ALTER TABLE `payment_tbl`
 -- Indexes for table `productimage_tbl`
 --
 ALTER TABLE `productimage_tbl`
-  ADD PRIMARY KEY (`img_no`);
+  ADD PRIMARY KEY (`image_no`);
 
 --
 -- Indexes for table `product_tbl`
@@ -447,6 +387,30 @@ ALTER TABLE `stocks_tbl`
 ALTER TABLE `transaction_tbl`
   ADD PRIMARY KEY (`transaction_no`);
 
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `inventory_tbl`
+--
+ALTER TABLE `inventory_tbl`
+  MODIFY `product_no` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `stalltransaction_tbl`
+--
+ALTER TABLE `stalltransaction_tbl`
+  MODIFY `stalltransaction_no` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `stocks_tbl`
+--
+ALTER TABLE `stocks_tbl`
+  MODIFY `batch_no` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `transaction_tbl`
+--
+ALTER TABLE `transaction_tbl`
+  MODIFY `transaction_no` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- Constraints for dumped tables
 --

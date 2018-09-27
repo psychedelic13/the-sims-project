@@ -1,6 +1,5 @@
-
             </div>
-            <!-- page-body-wrapper ends -->
+        <!-- page-body-wrapper ends -->
         </div>
         <!-- container-scroller -->
 
@@ -22,7 +21,26 @@
             moment().format();
         </script>
         <script src="/js/addtextbox.js"></script>
-        <!-- End custom js for this page-->
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#uploadForm').submit(function() {
+                    $("#status").empty().text("File is uploading...");
+                    $(this).ajaxSubmit({
+                        error: function(xhr) {
+                            status('Error: ' + xhr.status);
+                        },
+                        success: function(response) {
+                            console.log(response)
+                            $("#status").empty().text(response);
+                        }
+                    });
+                    return false;
+                });
+            });
+        </script>
+    <!-- End custom js for this page-->
     </body>
 
 </html>

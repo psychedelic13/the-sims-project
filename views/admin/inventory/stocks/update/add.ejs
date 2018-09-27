@@ -1,4 +1,4 @@
-<% include ../../partials/admin-header.ejs %>
+<% include ../../../partials/admin-header.ejs %>
     <!-- MAIN CONTENTS -->
     <!-- partial -->
     <div class="main-panel">
@@ -29,17 +29,26 @@
                 <div id="main" class="col-lg-12 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">
-                            <a href="/inventory/stocks/display/<%= productno %>"><button type="button" class="btn btn-outline-success title-btn">&lt;</button></a>
+                            <a href="/admin/inventory/product/<%= productno %>"><button type="button" class="btn btn-outline-success title-btn">&lt;</button></a>
                             <a href="/admin/inventory/stocks/add/<%= productno %>"><button type="button" class="btn btn-outline-success title-btn">Add Size</button></a>
                             <i class="menu-icon mdi mdi-cube text-info icon-md table-icon"></i>
-                            <h4 class="card-title table-name">Update Stocks</h4>
+                            <h4 class="card-title table-name">Add Stocks</h4><br><br><br><br>
                             <form action="/admin/inventory/stocks/update/<%= productno %>" method="post" name="addsize">
                                 <div class="form-group">
-                                    <label for="productname">Product Name</label>
-                                    <p><%= productname %></p>
+                                    <label for="productname">Product Name</label><br>
+                                    <%= productname %>
                                 </div>
                                 <div class="form-group">
                                     <label for="cog">Cost of Goods</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend bg-primary border-primary">
+                                            <span class="input-group-text bg-transparent text-white">PHP</span>
+                                        </div>
+                                        <input type="text" class="form-control" id="cog" name="cog" placeholder="Production Cost" value="<%= cog %>" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cog">Price</label>
                                     <div class="input-group">
                                         <div class="input-group-prepend bg-primary border-primary">
                                             <span class="input-group-text bg-transparent text-white">PHP</span>
@@ -57,37 +66,24 @@
                                                     <th>Available Stock</th>
                                                     <th>Reserved Stock</th>
                                                     <th>New Stock Amount</th>
-                                                    <th>Shelf Location</th>
                                                 </tr>
                                             </thead>
-                                            <!--
-                                            Using forEach loop for the products array
-
-                                            myArray.forEach(function(el, index) {
-                                            // el - current element, i - index
-                                        });
-                                    -->
-                                    <tbody>
-                                        <% if(data) { %>
-                                            <% data.forEach(function(product) { %>
-                                                <tr>
-                                                    <input type="hidden" name="productsku[]" value="<%= product.product_sku %>">
-                                                    <td><%= product.product_sku %></td>
-                                                    <td><%= product.total_stock %></td>
-                                                    <td><%= product.available_stock %></td>
-                                                    <td><%= product.reserved_stock %></td>
-                                                    <td>
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" name="addstock[]" value="<%= addstock %>">
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                        <div class="form-group">
-                                                            <input type="text" class="form-control" name="shelflocation[]" value="<%= shelflocation %>">
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <% }) %>
+                                            <tbody>
+                                                <% if(data) { %>
+                                                    <% data.forEach(function(product) { %>
+                                                        <tr>
+                                                            <input type="hidden" name="productsku[]" value="<%= product.product_sku %>">
+                                                            <td><%= product.product_sku %></td>
+                                                            <td><%= product.total_stock %></td>
+                                                            <td><%= product.available_stock %></td>
+                                                            <td><%= product.reserved_stock %></td>
+                                                            <td>
+                                                                <div class="form-group">
+                                                                    <input type="text" class="form-control" name="addstock[]" value="<%= addstock %>">
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    <% }) %>
                                                 <% } %>
                                             </tbody>
                                         </table>
@@ -118,4 +114,4 @@
     <!-- partial -->
     </div>
     <!-- main-panel ends -->
-<% include ../../partials/admin-footer.ejs %>
+<% include ../../../partials/admin-footer.ejs %>

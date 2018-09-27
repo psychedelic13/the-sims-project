@@ -1,4 +1,4 @@
-<% include ../partials/admin-header.ejs %>
+<% include ../../partials/admin-header.ejs %>
 <!-- MAIN CONTENTS -->
 <!-- partial -->
 <div class="main-panel">
@@ -30,9 +30,9 @@
                 <div class="card">
                     <div class="card-body">
                         <i class="menu-icon mdi mdi-cube text-info icon-md table-icon"></i>
-                        <h4 class="card-title table-name">Product Images</h4>
+                        <h4 class="card-title table-name">Product Images</h4><br><br><br>
                         <div class="form">
-                            <form class="form" action="add" method="post" enctype="multipart/form-data">
+                            <form class="form" action="/admin/inventory/images/add/<%= product_no %>" method="post" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label>Upload Product Photo</label>
                                     <input type="file" name="images[]" class="file-upload-default" multiple>
@@ -43,7 +43,9 @@
                                         </span>
                                     </div>
                                 </div>
-                                <input type="submit" name="submit" value="submit">
+                                <div class="form-group">
+                                    <input class="btn btn-success btn-submit" type="submit" name="Submit" value="submit">
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -79,4 +81,4 @@
     <!-- partial -->
 </div>
 <!-- main-panel ends -->
-<% include ../partials/admin-footer.ejs %>
+<% include ../../partials/admin-footer.ejs %>
