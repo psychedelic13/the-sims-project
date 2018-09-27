@@ -1,6 +1,5 @@
-<<<<<<< HEAD
-=======
 var mysql = require('mysql')
+var Promise = require('bluebird')
 
 var connection = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -10,7 +9,8 @@ var connection = mysql.createConnection({
     socketPath: '/var/run/mysqld/mysqld.sock'
 })
 
+var queryAsync = Promise.promisify(connection.query.bind(connection))
+
 connection.connect()
 
 module.exports = connection;
->>>>>>> 63bfffb0b60b8d4a35da41af4285830dd1e41668

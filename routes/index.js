@@ -23,15 +23,56 @@ router.get('/', function(req, res, next) {
 
 // Shop / Catalog Routes
 
-router.get('/shop/catalog', function(req, res, next) {
+router.get('/shop/allproducts', function(req, res, next) {
     // render to views/index.ejs template file
     res.render('shop/catalog', { title: 'Perry in Disguise | Shop' })
+
+    const db = require('../db.js')
+    let sql = `SELECT * FROM inventory_tbl WHERE is_deleted = ? AND is_phased_out = ? AND total_stock = ?`
+
+    // This comment is for pagination
+
     // const db = require('../db.js')
-    // let sql = `SELECT *
-    //     FROM stock_tbl S JOIN inventory_tbl I
-    //     ON S.product_no = I.product_no
-    //     WHERE I.is_deleted = 0 AND I.is_phased_out = 0 AND S.available_stock > 0
-    //     GROUP BY product_no;`
+    // let sql1 = `SELECT COUNT(*) as numRows FROM inventory_tbl`
+    // let sql2 = `SELECT * FROM inventory_tbl ORDER BY product_no DESC LIMIT ?`
+    // var numRows
+    // var queryPagination
+    // var numPerPage = parseInt(req.query.npp, 10) || 1
+    // var page = parseInt(req.query.page, 10) || 0
+    // var numPages
+    // var skip = page * numPerPage
+    // // Here we compute the LIMIT parameter for MySQL query
+    // var limit = skip + ',' + skip + numPerPage;
+    // db.queryAsync(sql)
+    //     .then(function(results) {
+    //         numRows = results[0].numRows;
+    //         numPages = Math.ceil(numRows / numPerPage);
+    //         console.log('number of pages:', numPages);
+    //     })
+    //     .then(() => db.queryAsync(sql, [limit]))
+    //     .then(function(results) {
+    //         var responsePayload = {
+    //             results: results
+    //         };
+    //         if (page < numPages) {
+    //             responsePayload.pagination = {
+    //                 current: page,
+    //                 perPage: numPerPage,
+    //                 previous: page > 0 ? page - 1 : undefined,
+    //                 next: page < numPages - 1 ? page + 1 : undefined
+    //             }
+    //         } else responsePayload.pagination = {
+    //             error: 'queried page ' + page + ' is >= to maximum page number ' + numPages
+    //         }
+    //         res.json(responsePayload)
+    //     })
+    //     .catch(function(error) {
+    //         console.error(error)
+    //         res.json({
+    //             error: error
+    //         })
+    //     })
+    // })
 })
 
 // Check-out Routes
