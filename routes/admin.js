@@ -485,7 +485,7 @@ router.post('/inventory/stocks/add/(:id)', function(req, res, next) {
             db.query(sql, [stock[i].product_sku, stock[i].product_no, stock[i].size_slug, stock[i].size_name, stock[i].total_stock, stock[i].available_stock, stock[i].reserved_stock], (error, results, fields) => {
                 let sql = `INSERT INTO stocks_tbl(product_sku, production_date, batch_cog, initial_stock, stock_left) VALUES (?, CURRENT_DATE(), ?, ?, ?, ?);`
                 db.query(sql, [stock[i].product_sku, cog, stock[i].total_stock, stock[i].available_stock], (error, results, fields) => {
-                    db.query(`SELECT LAST_INSERT_ID() AS id;`, (error, results, error) => {
+                    db.query(`SELECT LAST_INSERT_ID() AS id;`, (error, results, fields) => {
                         batch_id[i] = results[0].id
                     })
                 })

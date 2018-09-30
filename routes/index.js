@@ -23,7 +23,7 @@ router.get('/', function(req, res, next) {
 
 // Shop / Catalog Routes
 
-router.get('/shop/allproducts', function(req, res, next) {
+router.get('/shop/catalog', function(req, res, next) {
     // render to views/index.ejs template file
     res.render('shop/catalog', { title: 'Perry in Disguise | Shop' })
 
@@ -77,7 +77,9 @@ router.get('/shop/allproducts', function(req, res, next) {
 
 // Check-out Routes
 
+router.get('/customer/account/checkout/(:id)', function(req, res, next) {
 
+})
 
 // Customer Routes
 
@@ -162,16 +164,78 @@ router.get('/customer/account/loginsignup', function(req, res, next) {
     })
 })
 
-router.post('/customer/account/loginsignup/login', function(req, res, next) {
-    res.render('index', {
-        title: 'Perry in Disguise | Welcome'
-    })
-})
+// router.post('/customer/account/loginsignup/login', function(req, res, next) {
+//     res.render('index', {
+//         title: 'Perry in Disguise | Welcome'
+//     })
+// })
+
+router.post('/customer/account/loginsignup/login', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/customer/account/loginsignup'
+}))
 
 router.post('/customer/account/loginsignup/signup', function(req, res, next) {
-    res.render('index', {
-        title: 'Perry in Disguise | Welcome'
-    })
+    // res.render('index', {
+    //     title: 'Perry in Disguise | Welcome'
+    // })
+
+    req.assert('lastname', 'Last Name is required').notEmpty()
+    req.assert('firstname', 'First Name is required').notEmpty()
+    req.assert('email', 'Email Address is required').notEmpty()
+    req.assert('username', 'Username is required').notEmpty()
+    req.assert('password', 'Password is required').notEmpty()
+    req.assert('repassword', 'Confirm Password is required').notEmpty()
+    req.assert('repassword', 'Passwords does not match').equals(req.body.password)
+
+    var errors = req.validationErrors()
+
+    if (!errors) {
+        var account = {
+            lastname: req.sanitize('lastname').escape().trim(),
+            firstname: req.sanitize('firstname').escape().trim(),
+            email: req.sanitize('email').trim(),
+            username: req.sanitize('username').escape().trim(),
+            password: req.sanitize('password').trim()
+        }
+
+        bcrypt.hash(account.password, bcrypt.genSaltSync(10), null, function(err, hash) {
+            // Store hash in your password DB.
+            const db = require('../db.js')
+
+            db.query(`INSERT INTO accounts_tbl(last_name, first_name, username, password, account_type) VALUES (?, ?, ?, ?, ?)`, [account.lastname, account.firstname, account.username, hash, 'customer'], function(error, results, fields) {
+                if (error) throw error
+
+                let sql = `SELECT LAST_INSERT_ID() as id`
+
+                db.query(sql, (error, results, fields) => {
+                    let sql = `INSERT INTO customer_tbl(account_no, last_name, first_name, email_address) VALUES (?, ?, ?, ?)`
+
+                    db.query(sql, [results[0].id, account.lastname, account.firstname, account.email], (error, results, fields) => {
+                        if (error) throw error
+
+                        res.render('customer/account/loginsignup', {
+                            title: 'Perry in Disguise | Login / Signup',
+                            message: 'Registration complete, please login to continue!'
+                        })
+                    })
+                })
+            })
+        })
+    } else {
+        var error_msg = ''
+        errors.forEach(function(error) {
+            error_msg += error.msg + '<br>'
+        })
+        req.flash('error', error_msg)
+
+        res.render('admin/login', {
+            title: 'Perry in Disguise | Register',
+            lastname: req.body.lastname,
+            firstname: req.body.firstname,
+            username: req.body.username
+        })
+    }
 })
 
 // // Error 404 catcher

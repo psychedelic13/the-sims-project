@@ -12,6 +12,20 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="support">
                         <div class="panel-group" id="accordion">
+
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title font-alt"><a data-toggle="collapse" data-parent="#accordion" href="<%= questionid %>"><%= question %></a></h4>
+                                </div>
+                                <div class="panel-collapse collapse in" id="<%= answerid %>">
+                                    <div class="panel-body">
+                                        <%= answer %>
+                                    </div>
+                                </div>
+                            </div>
+
+
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title font-alt"><a data-toggle="collapse" data-parent="#accordion" href="#faq1">Why should we buy at your store?</a></h4>
