@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Sep 27, 2018 at 04:31 AM
+-- Generation Time: Sep 30, 2018 at 04:46 PM
 -- Server version: 5.7.23-0ubuntu0.16.04.1
 -- PHP Version: 7.0.32-0ubuntu0.16.04.1
 
@@ -88,8 +88,8 @@ CREATE TABLE `customer_tbl` (
   `last_name` varchar(20) NOT NULL,
   `first_name` varchar(20) NOT NULL,
   `email_address` varchar(30) NOT NULL,
-  `successful_trans` int(11) NOT NULL,
-  `cancelled_trans` int(11) NOT NULL
+  `successful_trans` int(11) NOT NULL DEFAULT '0',
+  `cancelled_trans` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -194,13 +194,6 @@ CREATE TABLE `sessions` (
   `expires` int(11) UNSIGNED NOT NULL,
   `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `sessions`
---
-
-INSERT INTO `sessions` (`session_id`, `expires`, `data`) VALUES
-('dhicRTXLRITDFK4ygebO8uD5npSYlPU0', 1538036997, '{"cookie":{"originalMaxAge":59999,"expires":"2018-09-27T08:29:52.532Z","httpOnly":true,"path":"/"},"flash":{},"passport":{"user":[{"account_no":1,"username":"blairwaldorf","password":"$2a$10$Nsu.UojRxZSq/UvudEP16erciWF56XH6XLe6jM/hbktSYGvnP13sW","last_name":"Waldorf","first_name":"Blair","account_type":"superadmin","is_activated":1}]}}');
 
 -- --------------------------------------------------------
 

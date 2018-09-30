@@ -27,8 +27,8 @@ router.get('/shop/catalog', function(req, res, next) {
     // render to views/index.ejs template file
     res.render('shop/catalog', { title: 'Perry in Disguise | Shop' })
 
-    const db = require('../db.js')
-    let sql = `SELECT * FROM inventory_tbl WHERE is_deleted = ? AND is_phased_out = ? AND total_stock = ?`
+    // const db = require('../db.js')
+    // let sql = `SELECT * FROM inventory_tbl WHERE is_deleted = ? AND is_phased_out = ? AND total_stock = ?`
 
     // This comment is for pagination
 
