@@ -26,16 +26,98 @@ var upload = multer({ storage: storage })
 // Dashboard Routes
 
 router.get('/', function(req, res, next) {
-    // render to views/admin/dashboard.ejs template file
-    res.render('admin/dashboard', {
-        title: 'Perry in Disguise | Dashboard'
+    const db = require('../db.js')
+    let sql = `SELECT product_name, total_stock FROM inventory_tbl ORDER BY total_stock ASC LIMIT 10;`
+
+    db.query(sql, (error, gauge_results, fields) => {
+        let sql = `SELECT product_name, jacket_sold FROM inventory_tbl ORDER BY jacket_sold ASC LIMIT 10;`
+
+        db.query(sql, (error, selling_results, fields) => {
+            let sql = `SELECT SUM(jacket_made) as jacketmade FROM inventory_tbl;`
+
+            db.query(sql, (error, jacket_made, fields) => {
+                let sql = `SELECT SUM(jacket_sold) as jacketsold FROM inventory_tbl;`
+
+                db.query(sql, (error, jacket_sold, fields) => {
+                    let sql = `SELECT COUNT(transaction_no) as successfultrans FROM transaction_tbl WHERE status = 4 AND is_deleted = 0;`
+
+                    db.query(sql, (error, successful_trans, fields) => {
+                        let sql = `SELECT COUNT(stransaction_no) as stallcatered FROM stalltransaction_tbl;`
+
+                        db.query(sql, (error, stall_catered, fields) => {
+                            let sql = `SELECT * FROM inventory_tbl WHERE total_stock <= 10 ORDER BY total_stock ASC LIMIT 10;`
+
+                            db.query(sql, (error, warning_results, fields) => {
+                                // render to views/admin/dashboard.ejs template file
+                                res.render('admin/dashboard', {
+                                    title: 'Perry in Disguise | Dashboard',
+                                    gauge_results: gauge_results,
+                                    selling_results: selling_results,
+                                    jacketmade: jacket_made[0].jacketmade,
+                                    jacketsold: jacket_sold[0].jacketsold,
+                                    successfultransaction: successful_trans[0].successfultrans,
+                                    eventcatered: stall_catered[0].stallcatered,
+                                    gauge_data: warning_results,
+                                    max_stocks: warning_results[9].total_stocks
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        })
     })
 })
 
 router.get('/dashboard', function(req, res, next) {
-    // render to views/admin/dashboard.ejs template file
-    res.render('admin/dashboard', {
-        title: 'Perry in Disguise | Dashboard'
+    const db = require('../db.js')
+    let sql = `SELECT product_name, total_stock FROM inventory_tbl ORDER BY total_stock ASC LIMIT 10;`
+
+    db.query(sql, (error, gauge_results, fields) => {
+        let sql = `SELECT product_name, jacket_sold FROM inventory_tbl ORDER BY jacket_sold ASC LIMIT 10;`
+
+        db.query(sql, (error, selling_results, fields) => {
+            let sql = `SELECT SUM(jacket_made) as jacketmade FROM inventory_tbl;`
+
+            db.query(sql, (error, jacket_made, fields) => {
+                let sql = `SELECT SUM(jacket_sold) as jacketsold FROM inventory_tbl;`
+
+                db.query(sql, (error, jacket_sold, fields) => {
+                    let sql = `SELECT COUNT(transaction_no) as successfultrans FROM transaction_tbl WHERE status = 4 AND is_deleted = 0;`
+
+                    db.query(sql, (error, successful_trans, fields) => {
+                        let sql = `SELECT COUNT(stalltransaction_no) as stallcatered FROM stalltransaction_tbl;`
+
+                        db.query(sql, (error, stall_catered, fields) => {
+                            let sql = `SELECT * FROM inventory_tbl WHERE total_stock <= 10 ORDER BY total_stock ASC LIMIT 10;`
+
+                            db.query(sql, (error, warning_results, fields) => {
+                                // render to views/admin/dashboard.ejs template file
+                                var product_name = []
+                                var total_stock = []
+                                for (var i = 0; i < gauge_results.length; i++) {
+                                    productname = gauge_results[i].product_name
+                                    totalstock = gauge_results[i].total_stock
+                                }
+                                console.log(productname, totalstock);
+                                res.render('admin/dashboard', {
+                                    title: 'Perry in Disguise | Dashboard',
+                                    productname: product_name,
+                                    totalstock: total_stock,
+                                    selling_results: selling_results,
+                                    jacketmade: jacket_made[0].jacketmade,
+                                    jacketsold: jacket_sold[0].jacketsold,
+                                    successfultransaction: successful_trans[0].successfultrans,
+                                    eventcatered: stall_catered[0].stallcatered,
+                                    gauge_data: warning_results,
+                                    max_stocks: warning_results.slice(-1)[0].total_stock
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        })
     })
 })
 
@@ -482,9 +564,9 @@ router.post('/inventory/stocks/add/(:id)', function(req, res, next) {
 
         for (var i = 0; i < stock.length; i++) {
             let sql = `INSERT INTO product_tbl(product_sku, product_no, product_sizeslug, product_sizename, total_stock, available_stock, reserved_stock) VALUES (?, ?, ?, ?, ?, ?, ?);`
-            db.query(sql, [stock[i].product_sku, stock[i].product_no, stock[i].size_slug, stock[i].size_name, stock[i].total_stock, stock[i].available_stock, stock[i].reserved_stock], (error, results, fields) => {
-                let sql = `INSERT INTO stocks_tbl(product_sku, production_date, batch_cog, initial_stock, stock_left) VALUES (?, CURRENT_DATE(), ?, ?, ?, ?);`
-                db.query(sql, [stock[i].product_sku, cog, stock[i].total_stock, stock[i].available_stock], (error, results, fields) => {
+            db.query(sql, [stock[i].product_sku, req.params.id, stock[i].size_slug, stock[i].size_name, stock[i].total_stock, stock[i].available_stock, stock[i].reserved_stock], (error, results, fields) => {
+                let sql = `INSERT INTO stocks_tbl(product_sku, product_no, production_date, batch_cog, initial_stock, stock_left) VALUES (?, ?, CURRENT_DATE, ?, ?, ?);`
+                db.query(sql, [stock[i].product_sku, req.params.id, cog, stock[i].total_stock, stock[i].available_stock], (error, results, fields) => {
                     db.query(`SELECT LAST_INSERT_ID() AS id;`, (error, results, fields) => {
                         batch_id[i] = results[0].id
                     })
@@ -510,10 +592,22 @@ router.post('/inventory/stocks/add/(:id)', function(req, res, next) {
 
             res.redirect('/admin/inventory')
         } else {
-            req.flash('success', 'Data added successfully!')
+            let sql = `SELECT SUM(total_stock) as total_stock, SUM(available_stock) as available_stock, SUM(reserved_stock) as reserved_stock FROM product_tbl WHERE product_no = ?`
 
-            // redirect to inventory page
-            res.redirect('/admin/inventory')
+            db.query(sql, [req.params.id], (error, results, fields) => {
+                if (error) throw error
+
+                let sql = `UPDATE inventory_tbl SET total_stock = ?, available_stock = ?, reserved_stock = ? WHERE product_no = ?`
+
+                db.query(sql, [results[0].total_stock, results[0].available_stock, results[0].reserved_stock, req.params.id], (error, results, fields) => {
+                    if (error) throw error
+
+                    req.flash('success', 'Data added successfully!')
+
+                    // redirect to inventory page
+                    res.redirect('/admin/inventory')
+                })
+            })
         }
     })
 })

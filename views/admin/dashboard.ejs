@@ -1,6 +1,496 @@
-<% include partials/admin-header.ejs %>
-<!-- MAIN CONTENTS -->
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>
+        <%= title %>
+    </title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="/star-admin-template/vendors/iconfonts/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/star-admin-template/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="/star-admin-template/vendors/css/vendor.bundle.addons.css">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="/star-admin-template/stylesheets/css/style.css">
+    <!-- endinject -->
+    <!-- plugin css for this page -->
+    <link rel="stylesheet" href="/star-admin-template/stylesheets/css/customstyle.css">
+    <!-- End plugin css for this page -->
+    <link rel="shortcut icon" href="/star-admin-template/images/favicon.png" />
+</head>
 
-<!-- main-panel ends -->
-<% include partials/admin-footer.ejs %>
+<body>
+    <div class="container-scroller">
+        <!-- partial:partials/_navbar.html -->
+        <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+
+            <!-- LOGO CONTAINER -->
+            <div class="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center">
+                <a class="navbar-brand brand-logo" href="index.html">
+                    <img src="/star-admin-template/images/logo.svg" alt="logo" />
+                </a>
+                <a class="navbar-brand brand-logo-mini" href="index.html">
+                    <img src="/star-admin-template/images/logo-mini.svg" alt="logo" />
+                </a>
+            </div>
+
+            <!-- TOP NAVIGATION -->
+            <div class="navbar-menu-wrapper d-flex align-items-center">
+
+                <!-- NOTIFICATIONS AND PROFILE SETTINGS -->
+                <ul class="navbar-nav navbar-nav-right">
+
+                    <!-- PROFILE BUTTON -->
+                    <li class="nav-item dropdown d-none d-xl-inline-block">
+                        <a class="nav-link dropdown-toggle" id="UserDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
+                            <span class="profile-text">Hello, Administrator !</span>
+                            <img class="img-xs rounded-circle" src="/star-admin-template/images/faces/face1.jpg" alt="Profile image">
+                        </a>
+
+                        <!-- PROFILE CONTENTS DROPDOWN -->
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
+                            <a class="dropdown-item p-0">
+                                <div class="d-flex border-bottom">
+                                    <div class="py-3 px-4 d-flex align-items-center justify-content-center">
+                                        <i class="mdi mdi-bookmark-plus-outline mr-0 text-gray"></i>
+                                    </div>
+                                    <div class="py-3 px-4 d-flex align-items-center justify-content-center border-left border-right">
+                                        <i class="mdi mdi-account-outline mr-0 text-gray"></i>
+                                    </div>
+                                    <div class="py-3 px-4 d-flex align-items-center justify-content-center">
+                                        <i class="mdi mdi-alarm-check mr-0 text-gray"></i>
+                                    </div>
+                                </div>
+                            </a>
+                            <a class="dropdown-item">Change Password</a>
+                            <a class="dropdown-item">Check Inbox</a>
+                            <a class="dropdown-item">Sign Out</a>
+                        </div>
+                    </li>
+                </ul>
+                <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
+                    <span class="icon-menu"></span>
+                </button>
+            </div>
+        </nav>
+        <!-- END OF TOP NAVIGATION -->
+
+        <%= productname %>
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper">
+            <!-- partial:partials/_sidebar.html -->
+            <nav class="sidebar sidebar-offcanvas" id="sidebar">
+                <ul class="nav">
+
+                    <!-- PROFILE SIDEBAR -->
+                    <li class="nav-item nav-profile">
+                        <div class="nav-link">
+                            <div class="user-wrapper">
+                                <div class="profile-image">
+                                    <img src="/star-admin-template/images/faces/face1.jpg" alt="profile image">
+                                </div>
+                                    <div class="text-wrapper">
+                                        <p class="profile-name">Serena van der Woodsen</p>
+                                        <div>
+                                            <small class="designation text-muted">Superuser</small>
+                                            <span class="status-indicator online"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                    </li>
+
+                    <!-- TAB BUTTONS -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/dashboard">
+                            <i class="menu-icon mdi mdi-chart-line-variant"></i>
+                            <span class="menu-title">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/inventory">
+                            <i class="menu-icon mdi mdi-cube"></i>
+                            <span class="menu-title">Inventory</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/customers">
+                            <i class="menu-icon mdi mdi-face"></i>
+                            <span class="menu-title">Customer Profiles</span>
+                        </a>
+                    </li>
+
+                    <!-- COLLAPSE TAB -->
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#transaction" aria-expanded="false" aria-controls="transaction">
+                            <i class="menu-icon mdi mdi-tag"></i>
+                            <span class="menu-title">Online Transactions</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="collapse" id="transaction">
+                            <!-- COLLAPSE CONTENT -->
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/onlinetransactions/ongoing">Ongoing Transactions</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/onlinetransactions/all">Transaction Records</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/onlinetransactions/payments">Payment Records</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/onlinetransactions/shippings">Shipping Records</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/stalltransactions">
+                            <i class="menu-icon mdi mdi-credit-card"></i>
+                            <span class="menu-title">Stall Transactions</span>
+                        </a>
+                    </li>
+
+                    <!-- REPORTS COLLAPSE -->
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="collapse" href="#reports" aria-expanded="false" aria-controls="reports">
+                            <i class="menu-icon mdi mdi-file-chart"></i>
+                            <span class="menu-title">Tools</span>
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <!-- REPORTS COLLAPSE CONTENTS -->
+                        <div class="collapse" id="reports">
+                            <ul class="nav flex-column sub-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/sales"> Sales </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/report"> Printable Reports </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/admin/query"> Queries </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <!-- END OF TAB BUTTONS -->
+                </ul>
+            </nav>
+            <!-- END OF SIDEBAR -->
+
+            <!-- MAIN CONTENTS -->
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <div class="row">
+                        <!-- Card Reports -->
+                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
+                            <div class="card card-statistics">
+                                <div class="card-body">
+                                    <div class="clearfix">
+                                        <div class="float-left">
+                                            <i class="mdi mdi-cube text-danger icon-lg"></i>
+                                        </div>
+                                        <div class="float-right">
+                                            <p class="mb-0 text-right">Number of Jackets Made</p>
+                                            <div class="fluid-container">
+                                                <h3 class="font-weight-medium text-right mb-0"><%= jacketmade %></h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="text-muted mt-3 mb-0">
+                                        <i class="mdi mdi-alert-octagon mr-1" aria-hidden="true"></i> Jackets made for the month.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
+                            <div class="card card-statistics">
+                                <div class="card-body">
+                                    <div class="clearfix">
+                                        <div class="float-left">
+                                            <i class="mdi mdi-receipt text-warning icon-lg"></i>
+                                        </div>
+                                        <div class="float-right">
+                                            <p class="mb-0 text-right">Jacket Sold</p>
+                                            <div class="fluid-container">
+                                                <h3 class="font-weight-medium text-right mb-0"><%= jacketsold %></h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="text-muted mt-3 mb-0">
+                                        <i class="mdi mdi-bookmark-outline mr-1" aria-hidden="true"></i> Jacket sold on this month.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
+                            <div class="card card-statistics">
+                                <div class="card-body">
+                                    <div class="clearfix">
+                                        <div class="float-left">
+                                            <i class="mdi mdi-poll-box text-success icon-lg"></i>
+                                        </div>
+                                        <div class="float-right">
+                                            <p class="mb-0 text-right">Successful Transactions</p>
+                                            <div class="fluid-container">
+                                                <h3 class="font-weight-medium text-right mb-0"><%= successfultransaction %>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-muted mt-3 mb-0">
+                            <i class="mdi mdi-calendar mr-1" aria-hidden="true"></i> This month number of successful transaction.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 grid-margin stretch-card">
+                <div class="card card-statistics">
+                    <div class="card-body">
+                        <div class="clearfix">
+                            <div class="float-left">
+                                <i class="mdi mdi-account-location text-info icon-lg"></i>
+                            </div>
+                            <div class="float-right">
+                                <p class="mb-0 text-right">Number Events Catered</p>
+                                <div class="fluid-container">
+                                    <h3 class="font-weight-medium text-right mb-0"><%= eventcatered %></h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="text-muted mt-3 mb-0">
+                                        <i class="mdi mdi-reload mr-1" aria-hidden="true"></i> Number of events catered on this month.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <% if(gauge_data) { %>
+                        <!-- Graph Reports -->
+                        <div class="row">
+                            <div class="col-lg-12 grid-margin">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title text-danger">Inventory Gauge (Below Warning Level)</h4>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Product Name</th>
+                                                        <th>Total Stock Left</th>
+                                                        <th></th>
+                                                        <th>Jacket Sold</th>
+                                                        <th>Jacket Made</th>
+                                                        <th>Cost of Goods</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% gauge_data.forEach(function(product) { %>
+                                                    <tr>
+                                                        <td class="font-weight-medium">
+                                                            <%= product.product_name %>
+                                                        </td>
+                                                        <td>
+                                                            <div class="progress">
+                                                                <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" role="progressbar" style="width: 25%" aria-valuenow="<%= product.total_stock*10 %>" aria-valuemin="0" aria-valuemax="<%= max_stocks %>"></div>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <%= product.total_stock %>
+                                                        </td>
+                                                        <td>
+                                                            <%= product.jacket_sold %>
+                                                        </td>
+                                                        <td>
+                                                            <%= product.jacket_made %>
+                                                        </td>
+                                                        <td>
+                                                            <%= product.product_cog %>
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                    <div class="row">
+                        <div class="col-md-6 grid-margin">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row d-none d-sm-flex mb-4">
+                                        <div class="chart-container">
+                                            <canvas id="inventorygauge" class="chartjs-render-monitor"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 grid-margin">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row d-none d-sm-flex mb-4">
+                                        <div class="chart-container">
+                                            <canvas id="mostselling" class="chartjs-render-monitor"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- content-wrapper ends -->
+                <!-- partial:partials/_footer.html -->
+                <footer class="footer">
+                    <div class="container-fluid clearfix">
+                        <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2018
+                <a href="http://www.bootstrapdash.com/" target="_blank">Bootstrapdash</a>. All rights reserved.</span>
+                        <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with
+                <i class="mdi mdi-heart text-danger"></i>
+            </span>
+                    </div>
+                </footer>
+                <!-- partial -->
+            </div>
+            <!-- main-panel ends -->
+
+        </div>
+        <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+
+    <!-- plugins:js -->
+    <script src="/star-admin-template/vendors/js/vendor.bundle.base.js"></script>
+    <script src="/star-admin-template/vendors/js/vendor.bundle.addons.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page-->
+    <script src="/star-admin-template/js/main.js"></script>
+    <!-- End plugin js for this page-->
+    <!-- inject:js -->
+    <script src="/star-admin-template/js/off-canvas.js"></script>
+    <script src="/star-admin-template/js/misc.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page-->
+    <script src="/star-admin-template/js/dashboard.js"></script>
+    <script src="/star-admin-template/js/moment.js"></script>
+    <script>
+        moment().format();
+    </script>
+    <script src="/js/addtextbox.js"></script>
+    <script src="/js/chart.js"></script>
+
+    </script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#uploadForm').submit(function() {
+                $("#status").empty().text("File is uploading...");
+                $(this).ajaxSubmit({
+                    error: function(xhr) {
+                        status('Error: ' + xhr.status);
+                    },
+                    success: function(response) {
+                        console.log(response)
+                        $("#status").empty().text(response);
+                    }
+                });
+                return false;
+            });
+        });
+
+        $(function() {
+        // Scripts in the head for chartjs
+        // code to draw graph
+        // inventory gauge
+        // $("#inventorygauge").bind('ajax:success', function(gauge_results) {
+        //     var barData = {
+        //         label: gauge_results.product_sku,
+        //         datasets: [{
+        //             label: 'Number of Available Stock Left',
+        //             fillColor: '#382765',
+        //             stockResults: gauge_results.total_stock
+        //         }]
+        //     };
+        //     var context = document.getElementById('inventorygauge').getContext('2d');
+        //     var clientsChart = new Chart(context).Bar(barData);
+        // });
+        if ($("#inventorygauge").length) {
+          var barChartCanvas = $("#inventorygauge").get(0).getContext("2d");
+          // This will get the first returned node in the jQuery collection.
+          var data = {
+            labels: productname,
+            datasets: [{
+              label: 'Number of Available Stock Left',
+              data: totalstock,
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+              ],
+              borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+              ],
+              borderWidth: 1
+            }]
+          };
+
+          var options = {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true
+                }
+              }]
+            },
+            legend: {
+              display: false
+            },
+            elements: {
+              point: {
+                radius: 0
+              }
+            }
+
+          };
+
+          var barChart = new Chart(barChartCanvas, {
+            type: 'bar',
+            data: data,
+            options: options
+          });
+        }
+
+        $("#mostselling").bind('ajax:success', function(selling_results) {
+            var barData = {
+                label: selling_results.product_sku,
+                datasets: [{
+                    label: 'Items sold',
+                    fillColor: '#382765',
+                    stockResults: selling_results.jacket_sold
+                }]
+            };
+            var context = document.getElementById('mostselling').getContext('2d');
+            var clientsChart = new Chart(context).Bar(barData);
+        });
+        });
+    </script>
+    <!-- End custom js for this page-->
+</body>
+
+</html>

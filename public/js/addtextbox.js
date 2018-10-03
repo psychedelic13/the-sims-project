@@ -11,7 +11,6 @@ function moretextbox() {
     var newCell2 = newRow.insertCell(2);
     var newCell3 = newRow.insertCell(3);
     var newCell4 = newRow.insertCell(4);
-    var newCell5 = newRow.insertCell(5);
 
     var sizeslug = document.createElement('input');
     sizeslug.type = "text";
@@ -28,15 +27,10 @@ function moretextbox() {
     initialstock.className = "form-control";
     initialstock.name = "initialstock[]";
 
-    var shelflocation = document.createElement('input');
-    shelflocation.type = "text";
-    shelflocation.className = "form-control";
-    shelflocation.name = "shelflocation[]";
     // Append a text node to the cell
 
     newCell1.appendChild(sizeslug);
     newCell2.appendChild(sizename);
     newCell3.appendChild(initialstock);
-    newCell4.appendChild(shelflocation);
     return false;
 }
