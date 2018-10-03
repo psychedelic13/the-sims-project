@@ -11,15 +11,16 @@ const saltRounds = 10
 
 var multer  = require('multer')
 var storage = multer.diskStorage({
-  destination: function (req, file, callback) {
-    callback(null, 'public/productimages/')
-  },
+  destination: './public/uploads',
   filename: function (req, file, callback) {
-    callback(null, file.fieldname + '-' + Date.now())
+    callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
   }
 })
 
-var upload = multer({ storage: storage })
+var upload = multer({
+    storage: storage,
+    limits: { filesize: 100000000 }
+}).single('images')
 
 // Admin Routes
 
@@ -464,29 +465,39 @@ router.get('/inventory/product/images/(:id)', function(req, res, next) {
             res.render('admin/inventory/product/images', {
                 title: 'Perry in Disguise | Product Images',
                 data: results,
+                division: results.length/4,
                 product_no: req.params.id
             })
         }
     })
 })
 
-router.post('inventory/product/images/add/(:id)', upload.array('images', 4), function(req, res, next) {
-    const db = require('../db.js')
-    let sql = `INSERT INTO productimage_tbl(product_no, image_path) VALUES (?, ?)`
+router.post('/inventory/product/images/add/(:id)', function(req, res, next) {
+    upload(req, res, (error) => {
+        const db = require('../db.js')
+        let sql = `INSERT INTO productimage_tbl(product_no, image_path) VALUES (?, ?)`
 
-    db.query(sql, [req.params.id, req.files.destination + req.files.filename], (error, results, fields) => {
-        if (error) {
-            req.flash('error', error)
+        db.query(sql, [req.params.id, '/uploads/' + req.file.filename], (error, results, fields) => {
+            if (error) {
+                req.flash('error', error)
+                console.log(error);
+                console.log(req.file.destination, req.file.filename, req.params.id);
 
-            res.render('admin/inventory/product/images', {
-                title: 'Perry in Disguise | Product images',
-                data: ''
-            })
-        } else {
-            res.render('admin/inventory/product/images', {
-                title: results
-            })
-        }
+                res.render('admin/inventory/product/images', {
+                    title: 'Perry in Disguise | Product images',
+                    data: '',
+                    product_no: req.params.id
+                })
+            } else {
+                console.log(req.file);
+                res.render('admin/inventory/product/images', {
+                    title: 'Perry in Disguise | Product images',
+                    data: '',
+                    division: results.length/4,
+                    product_no: req.params.id
+                })
+            }
+        })
     })
 })
 

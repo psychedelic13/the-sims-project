@@ -32,14 +32,16 @@
                         <i class="menu-icon mdi mdi-cube text-info icon-md table-icon"></i>
                         <h4 class="card-title table-name">Product Images</h4><br><br><br>
                         <div class="form">
-                            <form class="form" action="/admin/inventory/images/add/<%= product_no %>" method="post" enctype="multipart/form-data">
+                            <form class="form" action="/admin/inventory/product/images/add/<%= product_no %>" method="post" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label>Upload Product Photo</label>
-                                    <input type="file" name="images[]" class="file-upload-default" multiple>
                                     <div class="input-group col-md-12">
-                                        <input type="text" class="form-control file-upload-info" disabled="" placeholder="Upload Image">
+                                        <input type="text" class="form-control file-upload-info" disabled="" placeholder="Upload Image" name="filename">
                                         <span class="input-group-append">
-                                            <button class="file-upload-browse btn btn-info" type="button">Upload</button>
+                                            <label class="file-upload-browse btn btn-info">
+                                                <input type="file" name="images" class=" file-upload-default" onchange="this.form.filename.value = this.value" multiple>
+                                                Upload
+                                            </label>
                                         </span>
                                     </div>
                                 </div>
